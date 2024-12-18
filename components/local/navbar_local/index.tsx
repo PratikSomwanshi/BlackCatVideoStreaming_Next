@@ -3,6 +3,10 @@ import Image from "next/image";
 import React from "react";
 import NavbarSearch from "./navbar_search";
 import ThemeSwitcher from "../theme_switcher";
+import NavbarHamburgerMenu from "./navbar_hamburger_menu";
+import { Search } from "lucide-react";
+import NavbarSearchIcon from "./navbar_search_icon";
+import LogoLocal from "../logo_local";
 
 const nav_links = [
     {
@@ -22,37 +26,42 @@ const nav_links = [
 function NavbarLocal() {
     return (
         <div className="h-16  flex items-center justify-between px-4">
-            <div>
-                <Image
-                    src="/black_cat_logo.svg"
-                    alt="logo_image"
-                    width={100}
-                    height={100}
-                    className="h-10 w-10"
-                />
+            <div className="flex items-center space-x-2">
+                <div className="">
+                    <NavbarHamburgerMenu />
+                </div>
+
+                <LogoLocal size={40} />
             </div>
-            <div className="h-full w-[20rem] flex justify-center items-center space-x-8 ">
+            <div className="h-full w-[20rem] hidden justify-center items-center space-x-8 1000:flex">
                 {nav_links.map((link) => (
                     <a key={link.url} href={link.url}>
                         {link.name}
                     </a>
                 ))}
             </div>
+            <div className="flex gap-4 h-full items-center space-x-2">
+                <div className="hidden 450:flex  gap-4 h-full items-center space-x-2">
+                    <div>
+                        <ThemeSwitcher />
+                    </div>
+                    {/* COMPONENT: Search */}
+                    <div className="h-full">
+                        <div className="hidden 750:flex h-full  items-center space-x-2">
+                            <NavbarSearch />
+                        </div>
 
-            <div className="flex  gap-4 h-full items-center space-x-2">
-                <div>
-                    <ThemeSwitcher />
-                </div>
-                {/* COMPONENT: Search */}
-                <div>
-                    <NavbarSearch />
-                </div>
-                {/* COMPONENT: sign in */}
-                <div>
-                    <Button variant="outline">Sign In</Button>
+                        <div className="h-full 750:hidden flex items-center">
+                            <NavbarSearchIcon />
+                        </div>
+                    </div>
+                    {/* COMPONENT: sign in */}
+                    <div>
+                        <Button variant="outline">Sign In</Button>
+                    </div>
                 </div>
                 {/* COMPONENT: buy plan */}
-                <div>
+                <div className="">
                     <Button>Buy Plan</Button>
                 </div>
             </div>
@@ -61,3 +70,5 @@ function NavbarLocal() {
 }
 
 export default NavbarLocal;
+
+//
