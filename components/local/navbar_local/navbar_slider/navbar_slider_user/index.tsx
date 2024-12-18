@@ -5,8 +5,8 @@ import React from "react";
 
 function NavbarSliderUser() {
     return (
-        <div className="space-y-3">
-            <div className="flex justify-end">
+        <div className="space-y-3 ">
+            <div className="flex justify-end ">
                 <Avatar>
                     <AvatarFallback>
                         {/* <AvatarImage src="./avatar-80-07.jpg" alt="Kelly King" /> */}
@@ -34,7 +34,9 @@ function NavbarSliderUser() {
                 </Button>
             </div>
             <div>
-                <Button className="flex justify-center items-center w-full">
+                <Button
+                    className="flex justify-start items-center w-full"
+                    variant="ghost">
                     <LogOut
                         className="-ms-1 me-2 mb-[0.10rem] opacity-60"
                         size={16}

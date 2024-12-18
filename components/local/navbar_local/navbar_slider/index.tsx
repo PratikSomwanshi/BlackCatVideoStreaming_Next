@@ -77,8 +77,8 @@ export function NavbarSlider() {
                     </svg>
                 </Button>
             </DrawerTrigger>
-            <DrawerContent>
-                <div className="mx-auto w-full flex justify-center items-end p-8 gap-40">
+            <DrawerContent className="h-[75%] 550:h-1/2">
+                <div className="mx-auto w-full  justify-center items-center 550:items-end p-8 gap-10 550:gap-40 flex 550:flex-row flex-col">
                     <VisuallyHidden className="hidden">
                         <DrawerHeader>
                             <DrawerTitle></DrawerTitle>
@@ -87,8 +87,7 @@ export function NavbarSlider() {
                     <div className="">
                         <NavbarSliderUser />
                     </div>
-                    {/* <Separator orientation="vertical" /> */}
-                    <div className=" ">
+                    <div className="">
                         <NavbarSliderUserUtility />
                     </div>
                 </div>
