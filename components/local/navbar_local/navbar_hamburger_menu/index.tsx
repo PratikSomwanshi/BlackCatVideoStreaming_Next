@@ -1,18 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useTheme } from "next-themes";
-import { useState } from "react";
+import { NavbarSlider } from "../navbar_slider";
 
 export default function NavbarHamburgerMenu() {
-    const [open, setOpen] = useState<boolean>(false);
+    return <NavbarSlider />;
+}
 
-    const { theme } = useTheme();
-
-    const color = theme == "dark" ? "dark" : "white";
-
-    return (
-        <Button
+{
+    /* <Button
             className={`group hover:bg-${color} bg-${color}`}
             variant="ghost"
             size="icon"
@@ -43,6 +38,5 @@ export default function NavbarHamburgerMenu() {
                     className="origin-center translate-y-[7px] transition-all duration-300 [transition-timing-function:cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-y-0 group-aria-expanded:rotate-[135deg]"
                 />
             </svg>
-        </Button>
-    );
+        </Button> */
 }
