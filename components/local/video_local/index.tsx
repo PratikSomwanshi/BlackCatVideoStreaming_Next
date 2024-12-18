@@ -10,8 +10,10 @@ import {
     FaPlay,
 } from "react-icons/fa6";
 import { RxEnterFullScreen } from "react-icons/rx";
+import { IoMdSettings } from "react-icons/io";
+import { Volume2 } from "lucide-react";
 
-export default function CustomVideoPlayer() {
+export default function VideoPlayerLocal() {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -19,6 +21,8 @@ export default function CustomVideoPlayer() {
     const [seek, setSeek] = useState(0);
     const [duration, setDuration] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
+    const [sliderHoverTime, setSliderHoverTime] = useState<number | null>(null);
+    const sliderRef = useRef<HTMLDivElement>(null);
 
     // Initialize HLS
     useEffect(() => {
@@ -80,6 +84,15 @@ export default function CustomVideoPlayer() {
             .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
     };
 
+    const handleSliderHover = (event: React.MouseEvent<HTMLDivElement>) => {
+        if (sliderRef.current) {
+            const sliderWidth = sliderRef.current.offsetWidth;
+            const offsetX = event.nativeEvent.offsetX;
+            const newTime = (offsetX / sliderWidth) * duration;
+            setSliderHoverTime(newTime);
+        }
+    };
+
     return (
         <div
             className="relative w-[800px] h-[450px] bg-black group"
@@ -122,9 +135,17 @@ export default function CustomVideoPlayer() {
                     {/* Top Controls */}
                     <div className="flex justify-between text-white z-10">
                         <span className="font-bold">Video Title</span>
-                        <button className="bg-gray-700 px-2 py-1 rounded">
-                            ⚙️
-                        </button>
+                        <Button
+                            variant="ghost"
+                            className="bg-transparent hover:bg-transparent px-2 py-1 rounded">
+                            <IoMdSettings
+                                style={{
+                                    width: "1.5rem",
+                                    height: "1.5rem",
+                                }}
+                                color="white"
+                            />
+                        </Button>
                     </div>
 
                     {/* Center Controls */}
@@ -198,12 +219,32 @@ export default function CustomVideoPlayer() {
                             max={duration}
                             step={0.1}
                             onValueChange={handleSeekChange}
+                            onMouseMove={handleSliderHover}
                             className="cursor-pointer"
                         />
+                        {sliderHoverTime !== null && (
+                            <div
+                                className="absolute top-0 left-0 z-20 bg-black text-white text-sm px-2 py-1 rounded"
+                                style={{
+                                    left: `${
+                                        (sliderHoverTime / duration) * 100
+                                    }%`,
+                                    transform: "translateX(-50%)",
+                                    bottom: "30px",
+                                }}>
+                                {formatTime(sliderHoverTime)}
+                            </div>
+                        )}
                         <div className="flex justify-between items-center mt-2">
                             <div className="flex items-center z-10">
                                 <label htmlFor="volume" className="mr-2">
-                                    🔊
+                                    <Volume2
+                                        style={{
+                                            width: "1.5rem",
+                                            height: "1.5rem",
+                                        }}
+                                        color="white"
+                                    />
                                 </label>
                                 <Slider
                                     min={0}
@@ -232,8 +273,8 @@ export default function CustomVideoPlayer() {
                                 }}>
                                 <RxEnterFullScreen
                                     style={{
-                                        width: "1.8rem",
-                                        height: "1.8rem",
+                                        width: "1.5rem",
+                                        height: "1.5rem",
                                     }}
                                     color="white"
                                 />
