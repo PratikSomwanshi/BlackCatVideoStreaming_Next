@@ -12,6 +12,8 @@ import {
 import { RxEnterFullScreen } from "react-icons/rx";
 import { IoMdSettings } from "react-icons/io";
 import { Volume2 } from "lucide-react";
+import * as SliderPrimitive from "@radix-ui/react-slider";
+import { cn } from "@/lib/utils";
 
 export default function VideoPlayerLocal() {
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -84,13 +86,20 @@ export default function VideoPlayerLocal() {
             .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
     };
 
-    const handleSliderHover = (event: React.MouseEvent<HTMLDivElement>) => {
-        if (sliderRef.current) {
-            const sliderWidth = sliderRef.current.offsetWidth;
-            const offsetX = event.nativeEvent.offsetX;
-            const newTime = (offsetX / sliderWidth) * duration;
-            setSliderHoverTime(newTime);
-        }
+    const handleSliderHover = (
+        event: React.MouseEvent<HTMLDivElement, MouseEvent>
+    ) => {
+        if (!sliderRef.current) return;
+
+        const sliderBounds = sliderRef.current.getBoundingClientRect();
+        const hoverX = event.clientX - sliderBounds.left; // Mouse X position relative to the slider
+        const hoverPercentage = Math.max(
+            0,
+            Math.min(hoverX / sliderBounds.width, 1)
+        ); // Clamp between 0 and 1
+        const hoverTime = hoverPercentage * duration;
+
+        setSliderHoverTime(hoverTime);
     };
 
     return (
@@ -126,6 +135,20 @@ export default function VideoPlayerLocal() {
                 </div>
             )}
 
+            {/* Top Overlay with Gradient */}
+            <div
+                className={`absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black via-transparent to-transparent transition-opacity duration-300 ${
+                    isHovered || !isPlaying ? "opacity-100" : "opacity-0"
+                }`}
+            />
+
+            {/* Bottom Overlay with Increased Height and Gradient */}
+            <div
+                className={`absolute bottom-0 left-0 right-0 h-52 bg-gradient-to-t from-black via-transparent to-transparent transition-opacity duration-300 ${
+                    isHovered || !isPlaying ? "opacity-100" : "opacity-0"
+                }`}
+            />
+
             {/* Controls */}
             {!isLoading && (
                 <div
@@ -158,7 +181,6 @@ export default function VideoPlayerLocal() {
                                     if (video) video.currentTime -= 10;
                                 }}
                                 className="bg-transparent hover:bg-transparent rounded z-10 ">
-                                {/* <RotateCcw size={44} color="white" /> */}
                                 <FaArrowRotateLeft
                                     style={{
                                         width: "1.8rem",
@@ -209,33 +231,45 @@ export default function VideoPlayerLocal() {
                     </div>
 
                     {/* Bottom Controls */}
-                    <div className="flex flex-col text-white">
-                        <div className="flex justify-between items-center text-sm mb-1">
+                    <div className="flex flex-col  text-white ">
+                        <div className="flex  justify-end items-center relative">
                             <span>{formatTime(seek)}</span>
+
+                            <SliderPrimitive.Root
+                                ref={sliderRef}
+                                className={cn(
+                                    "relative flex w-full touch-none select-none items-center px-1 cursor-pointer transition-[height] duration-300 ease-in-out h-1.5 hover:h-[0.65rem]"
+                                )}
+                                onMouseMove={handleSliderHover}
+                                onValueChange={handleSeekChange}
+                                onMouseEnter={() => setSliderHoverTime(null)}
+                                onMouseLeave={() => setSliderHoverTime(null)}
+                                min={0}
+                                max={duration}
+                                step={0.1}
+                                value={[seek]}>
+                                <SliderPrimitive.Track className="relative h-full w-full grow overflow-hidden rounded-full bg-slate-500 bg-opacity-50">
+                                    <SliderPrimitive.Range className="absolute h-full bg-white rounded-lg" />
+                                </SliderPrimitive.Track>
+                            </SliderPrimitive.Root>
+
                             <span>{formatTime(duration - seek)}</span>
+
+                            {sliderHoverTime !== null && (
+                                <div
+                                    className="absolute -top-4 left-0 h-5 px-1 z-20 bg-black text-white text-sm rounded"
+                                    style={{
+                                        left: `${
+                                            (sliderHoverTime / duration) * 100
+                                        }%`,
+                                        transform: "translateX(-50%)",
+                                        bottom: "30px",
+                                    }}>
+                                    {formatTime(sliderHoverTime)}
+                                </div>
+                            )}
                         </div>
-                        <Slider
-                            value={[seek]}
-                            max={duration}
-                            step={0.1}
-                            onValueChange={handleSeekChange}
-                            onMouseMove={handleSliderHover}
-                            className="cursor-pointer"
-                        />
-                        {sliderHoverTime !== null && (
-                            <div
-                                className="absolute top-0 left-0 z-20 bg-black text-white text-sm px-2 py-1 rounded"
-                                style={{
-                                    left: `${
-                                        (sliderHoverTime / duration) * 100
-                                    }%`,
-                                    transform: "translateX(-50%)",
-                                    bottom: "30px",
-                                }}>
-                                {formatTime(sliderHoverTime)}
-                            </div>
-                        )}
-                        <div className="flex justify-between items-center mt-2">
+                        <div className="flex justify-between items-center ">
                             <div className="flex items-center z-10">
                                 <label htmlFor="volume" className="mr-2">
                                     <Volume2
