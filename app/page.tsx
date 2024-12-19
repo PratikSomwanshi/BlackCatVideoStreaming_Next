@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
-import { Button } from "@/components/ui/button";
-import { NEXT_AUTH } from "@/utils/configuration/next_auth";
+import VideoCardLocal from "@/components/local/video_card_local";
+import Link from "next/link";
 import React from "react";
 
 async function HomePage() {
@@ -12,8 +12,21 @@ async function HomePage() {
 
     return (
         <div>
-            HomePage
-            <Button>click</Button>
+            <h2>Currently Available</h2>
+            <div className="flex gap-2 p-2 overflow-y-scroll">
+                {Array.from({ length: 10 }).map((_, index) => {
+                    return (
+                        <VideoCardLocal
+                            key={index}
+                            video_id="somehting"
+                            thumbnail="/gold.jpeg"
+                            description="this is a description"
+                            title="Gold Rush"
+                            isVideoPremium={true}
+                        />
+                    );
+                })}
+            </div>
         </div>
     );
 }

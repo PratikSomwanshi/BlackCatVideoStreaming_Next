@@ -3,3 +3,14 @@ export interface TooltipState {
     position: number; // Pixel position of the tooltip
     value: number; // Tooltip value (slider value at the position)
 }
+
+// video card
+
+export interface VideoCardProps {
+    title: string;
+    description: string;
+    thumbnail: string;
+    video_id: string;
+    isVideoPremium: boolean;
+    fallback_image_url?: string;
+}
