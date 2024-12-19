@@ -7,7 +7,7 @@ async function VideoPage({ params }: { params: Promise<{ slug: string }> }) {
     return (
         <div className="container mx-auto">
             <div className="flex justify-center">
-                <VideoPlayerLocal />
+                <VideoPlayerLocal id="123" />
             </div>
             <div className="w-[70%]  mx-auto mt-4 px-2">
                 <div className="">

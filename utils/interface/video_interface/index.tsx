@@ -14,3 +14,9 @@ export interface VideoCardProps {
     isVideoPremium: boolean;
     fallback_image_url?: string;
 }
+
+// video player
+
+export interface VideoPlayerProps {
+    videoUrl: string;
+}

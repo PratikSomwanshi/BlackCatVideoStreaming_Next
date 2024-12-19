@@ -14,6 +14,13 @@ async function HomePage() {
         <div>
             <h2>Currently Available</h2>
             <div className="flex gap-2 p-2 overflow-y-scroll">
+                <VideoCardLocal
+                    video_id="somehting"
+                    thumbnail="/gold.jpeg"
+                    description="this is a description"
+                    title="Gold Rush"
+                    isVideoPremium={true}
+                />
                 {Array.from({ length: 10 }).map((_, index) => {
                     return (
                         <VideoCardLocal
@@ -22,7 +29,7 @@ async function HomePage() {
                             thumbnail="/gold.jpeg"
                             description="this is a description"
                             title="Gold Rush"
-                            isVideoPremium={true}
+                            isVideoPremium={false}
                         />
                     );
                 })}

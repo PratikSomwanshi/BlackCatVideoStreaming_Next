@@ -14,8 +14,18 @@ import { IoMdSettings } from "react-icons/io";
 import { Volume2 } from "lucide-react";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { cn } from "@/lib/utils";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuShortcut,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-export default function VideoPlayerLocal() {
+export default function VideoPlayerLocal({ id }: { id: string }) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -29,10 +39,32 @@ export default function VideoPlayerLocal() {
     // Initialize HLS
     useEffect(() => {
         const video = videoRef.current;
-        if (video) {
-            setTimeout(() => {
-                video.src = "/test.mp4";
-            }, 2000);
+
+        if (video && Hls.isSupported()) {
+            const hls = new Hls();
+
+            hls.loadSource(
+                "http://localhost:9091/api/v1/video/hls/123/480p/playlist.m3u8"
+            );
+            hls.attachMedia(video);
+
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                console.log("Manifest loaded, starting playback.");
+                video.play();
+            });
+
+            return () => {
+                hls.destroy();
+            };
+        } else if (video?.canPlayType("application/vnd.apple.mpegurl")) {
+            // For Safari
+            video.src =
+                "http://localhost:9091/api/v1/video/${id}/480p/playlist.m3u8";
+            video.addEventListener("loadedmetadata", () => {
+                video.play();
+            });
+        } else {
+            console.error("This browser does not support HLS playback.");
         }
     }, []);
 
@@ -158,17 +190,38 @@ export default function VideoPlayerLocal() {
                     {/* Top Controls */}
                     <div className="flex justify-between text-white z-10">
                         <span className="font-bold">Video Title</span>
-                        <Button
-                            variant="ghost"
-                            className="bg-transparent hover:bg-transparent px-2 py-1 rounded">
-                            <IoMdSettings
-                                style={{
-                                    width: "1.5rem",
-                                    height: "1.5rem",
-                                }}
-                                color="white"
-                            />
-                        </Button>
+
+                        <div>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        className="bg-transparent hover:bg-transparent px-2 py-1 rounded">
+                                        <IoMdSettings
+                                            style={{
+                                                width: "1.5rem",
+                                                height: "1.5rem",
+                                            }}
+                                            color="white"
+                                        />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="w-56">
+                                    <DropdownMenuLabel>
+                                        My Account
+                                    </DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuGroup>
+                                        <DropdownMenuItem>
+                                            Profile
+                                            <DropdownMenuShortcut>
+                                                ⇧⌘P
+                                            </DropdownMenuShortcut>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuGroup>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
                     </div>
 
                     {/* Center Controls */}

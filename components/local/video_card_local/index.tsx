@@ -12,6 +12,7 @@ const VideoCard: React.FC<VideoCardProps> = ({
     fallback_image_url: fallbackImageUrl = "/fallback.jpg",
     title,
     description,
+    isVideoPremium,
 }) => {
     const [imageLoaded, setImageLoaded] = useState<boolean>(true);
 
@@ -35,9 +36,11 @@ const VideoCard: React.FC<VideoCardProps> = ({
                     onError={handleImageError} // Trigger fallback image on error
                 >
                     {/* Always visible premium icon */}
-                    <div className="absolute top-0 left-1 z-10">
-                        <FaMedal size={26} color="gold" />
-                    </div>
+                    {isVideoPremium && (
+                        <div className="absolute top-0 left-1 z-10">
+                            <FaMedal size={26} color="gold" />
+                        </div>
+                    )}
 
                     {/* Controls - Initially hidden, becomes visible on hover */}
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between h-full cursor-pointer">
