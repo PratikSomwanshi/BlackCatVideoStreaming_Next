@@ -2,95 +2,136 @@
 
 import { Button } from "@/components/ui/button";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import { Dispatch, SetStateAction, useState } from "react";
+    Dispatch,
+    SetStateAction,
+    useState,
+    RefObject,
+    useRef,
+    useEffect,
+} from "react";
 import { IoMdSettings } from "react-icons/io";
 
-export default function VideoSettingLocal({
-    quality,
-    setQuality,
-}: {
+interface VideoSettingLocalProps {
     quality: string;
     setQuality: Dispatch<SetStateAction<string>>;
-}) {
-    const [isOpen, setIsOpen] = useState(false); // Default quality
+    isFullscreen: boolean;
+    containerRef: RefObject<HTMLDivElement | null>;
+}
 
-    const handleQualityChange = (quality: string) => {
-        setQuality(quality);
+const VideoSettingLocal: React.FC<VideoSettingLocalProps> = ({
+    quality,
+    setQuality,
+    isFullscreen,
+}) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
+    const [menuPosition, setMenuPosition] = useState({ top: 0, right: 0 });
+
+    const qualities = ["144p", "240p", "360p", "480p", "720p", "1080p"];
+
+    const handleQualityChange = (selectedQuality: string) => {
+        setQuality(selectedQuality);
+        setIsOpen(false);
     };
 
+    // Update menu position when opening or when fullscreen changes
+    useEffect(() => {
+        if (isOpen && buttonRef.current) {
+            setMenuPosition({
+                top: 0,
+                right: 0,
+            });
+        }
+    }, [isOpen, isFullscreen]);
+
+    // Close menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                menuRef.current &&
+                !menuRef.current.contains(event.target as Node) &&
+                buttonRef.current &&
+                !buttonRef.current.contains(event.target as Node)
+            ) {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     return (
-        <Popover open={isOpen} onOpenChange={setIsOpen}>
-            <PopoverTrigger asChild>
-                <Button
-                    variant="ghost"
-                    className="bg-transparent hover:bg-transparent p-1 rounded"
-                    onClick={() => setIsOpen(true)}>
-                    <IoMdSettings
-                        style={{
-                            width: "1.25rem",
-                            height: "1.25rem",
-                        }}
-                        color="white"
-                    />
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent
-                className="max-w-[200px] shadow-none -translate-x-[5.8rem] -translate-y-8 p-0 py-1 px-2 m-0"
-                side="top">
-                <div className="h-auto">
-                    {/* Header Section */}
-                    <div className="flex justify-between items-center mb-1">
-                        <div className="flex items-center space-x-1">
-                            <IoMdSettings
-                                style={{
-                                    width: "1.25rem",
-                                    height: "1.25rem",
-                                }}
-                                color="black"
-                            />
-                            <h3 className="text-sm font-medium">Settings</h3>
+        <div className="relative" ref={menuRef}>
+            <Button
+                ref={buttonRef}
+                variant="ghost"
+                size="icon"
+                className="bg-transparent hover:bg-transparent p-1 rounded"
+                onClick={() => setIsOpen(!isOpen)}>
+                <IoMdSettings
+                    style={{
+                        width: "1.25rem",
+                        height: "1.25rem",
+                    }}
+                    color="white"
+                />
+            </Button>
+
+            {isOpen && (
+                <div
+                    style={{
+                        position: "absolute",
+                        top: menuPosition.top,
+                        right: menuPosition.right,
+                    }}
+                    className={`
+                        w-[250px] bg-black bg-opacity-90 
+                        rounded-lg shadow-lg border border-gray-700 p-4 z-50
+                    `}>
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2 text-white">
+                            <IoMdSettings className="w-5 h-5" />
+                            <span className="text-sm font-medium">
+                                Settings
+                            </span>
                         </div>
-                        <Button
-                            variant="ghost"
-                            className="p-0 bg-transparent hover:bg-transparent"
-                            onClick={() => setIsOpen(false)}>
-                            ❌
-                        </Button>
+                        <button
+                            onClick={() => setIsOpen(false)}
+                            className="text-white hover:text-gray-300 transition-colors">
+                            ×
+                        </button>
                     </div>
 
-                    {/* Video Quality Section */}
-                    <div className="border-t pt-2">
-                        <h4 className="text-xs font-semibold mb-1">
+                    <div className="space-y-2">
+                        <h4 className="text-sm font-medium text-white mb-2">
                             Video Quality
                         </h4>
-                        <ul className="flex flex-wrap justify-around gap-2">
-                            {[
-                                "144p",
-                                "240p",
-                                "360p",
-                                "480p",
-                                "720p",
-                                "1080p",
-                            ].map((q) => (
-                                <li
+                        <div className="grid grid-cols-2 gap-2">
+                            {qualities.map((q) => (
+                                <button
                                     key={q}
-                                    className={`cursor-pointer text-sm w-[40%] h-7  px-2 py-1 rounded text-center ${
-                                        quality === q
-                                            ? "bg-blue-500 text-white"
-                                            : "bg-gray-100"
-                                    }`}
-                                    onClick={() => handleQualityChange(q)}>
+                                    onClick={() => handleQualityChange(q)}
+                                    className={`
+                                        px-3 py-2 text-sm rounded-md transition-colors
+                                        ${
+                                            quality === q
+                                                ? "bg-blue-500 text-white"
+                                                : "bg-gray-700 text-white hover:bg-gray-600"
+                                        }
+                                    `}>
                                     {q}
-                                </li>
+                                </button>
                             ))}
-                        </ul>
+                        </div>
                     </div>
                 </div>
-            </PopoverContent>
-        </Popover>
+            )}
+        </div>
     );
-}
+};
+
+export default VideoSettingLocal;

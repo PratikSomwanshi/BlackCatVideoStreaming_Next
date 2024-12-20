@@ -29,6 +29,8 @@ export default function VideoPlayerLocal({ id }: { id: string }) {
     const sliderRef = useRef<HTMLDivElement>(null);
     const [videoTime, setVideoTime] = useState<number | undefined>(0);
     const [quality, setQuality] = useState<string>("1080p");
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [isFullscreen, setIsFullscreen] = useState(false);
 
     useEffect(() => {
         if (videoRef) {
@@ -75,6 +77,20 @@ export default function VideoPlayerLocal({ id }: { id: string }) {
             console.error("This browser does not support HLS playback.");
         }
     }, [quality]);
+
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+
+        document.addEventListener("fullscreenchange", handleFullscreenChange);
+        return () => {
+            document.removeEventListener(
+                "fullscreenchange",
+                handleFullscreenChange
+            );
+        };
+    }, []);
 
     const handleProgress = () => {
         const video = videoRef.current;
@@ -144,6 +160,7 @@ export default function VideoPlayerLocal({ id }: { id: string }) {
 
     return (
         <div
+            ref={containerRef}
             className="relative w-[70%] h-[70%] bg-black group"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}>
@@ -161,13 +178,10 @@ export default function VideoPlayerLocal({ id }: { id: string }) {
                 onPlay={() => {
                     setIsPlaying(true);
                 }}
-                // onPause={() => setIsPlaying(false)}
-                onWaiting={() => setIsLoading(!isLoading && true)}
+                onPause={() => setIsPlaying(false)}
+                onWaiting={() => setIsLoading(true)}
                 onPlaying={() => setIsLoading(false)}
             />
-
-            {/* Loading Spinner */}
-            {/* {isLoading && } */}
 
             {/* Top Overlay with Gradient */}
             <div
@@ -197,6 +211,8 @@ export default function VideoPlayerLocal({ id }: { id: string }) {
                             <VideoSettingLocal
                                 quality={quality}
                                 setQuality={setQuality}
+                                isFullscreen={isFullscreen}
+                                containerRef={containerRef}
                             />
                         </div>
                     </div>
