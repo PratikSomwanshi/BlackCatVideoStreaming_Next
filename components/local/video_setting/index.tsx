@@ -15,7 +15,6 @@ interface VideoSettingLocalProps {
     quality: string;
     setQuality: Dispatch<SetStateAction<string>>;
     isFullscreen: boolean;
-    containerRef: RefObject<HTMLDivElement | null>;
 }
 
 const VideoSettingLocal: React.FC<VideoSettingLocalProps> = ({
