@@ -14,43 +14,48 @@ import { IoMdSettings } from "react-icons/io";
 import { Volume2 } from "lucide-react";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { cn } from "@/lib/utils";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuShortcut,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
+import VideoSettingLocal from "../video_setting";
 
 export default function VideoPlayerLocal({ id }: { id: string }) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [volume, setVolume] = useState(0.8);
     const [seek, setSeek] = useState(0);
     const [duration, setDuration] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
     const [sliderHoverTime, setSliderHoverTime] = useState<number | null>(null);
     const sliderRef = useRef<HTMLDivElement>(null);
+    const [videoTime, setVideoTime] = useState<number | undefined>(0);
+    const [quality, setQuality] = useState<string>("1080p");
+
+    useEffect(() => {
+        if (videoRef) {
+            setVideoTime(videoRef.current?.currentTime);
+        }
+    }, [videoRef.current?.currentTime]);
 
     // Initialize HLS
     useEffect(() => {
         const video = videoRef.current;
 
+        setIsLoading(true);
         if (video && Hls.isSupported()) {
+            // Save current time before loading a new source
+
             const hls = new Hls();
 
             hls.loadSource(
-                "http://localhost:9091/api/v1/video/hls/123/480p/playlist.m3u8"
+                `http://localhost:9091/api/v1/video/hls/123/${quality}/playlist.m3u8`
             );
             hls.attachMedia(video);
 
             hls.on(Hls.Events.MANIFEST_PARSED, () => {
                 console.log("Manifest loaded, starting playback.");
+                if (videoTime) video.currentTime = videoTime; // Resume from saved time
                 video.play();
+                setIsLoading(false);
             });
 
             return () => {
@@ -58,15 +63,18 @@ export default function VideoPlayerLocal({ id }: { id: string }) {
             };
         } else if (video?.canPlayType("application/vnd.apple.mpegurl")) {
             // For Safari
-            video.src =
-                "http://localhost:9091/api/v1/video/${id}/480p/playlist.m3u8";
+            const currentTime = video.currentTime;
+
+            video.src = `http://localhost:9091/api/v1/video/${id}/480p/playlist.m3u8`;
             video.addEventListener("loadedmetadata", () => {
+                video.currentTime = currentTime; // Resume from saved time
                 video.play();
+                setIsLoading(false);
             });
         } else {
             console.error("This browser does not support HLS playback.");
         }
-    }, []);
+    }, [quality]);
 
     const handleProgress = () => {
         const video = videoRef.current;
@@ -148,24 +156,18 @@ export default function VideoPlayerLocal({ id }: { id: string }) {
                     const video = videoRef.current;
                     if (video) {
                         setDuration(video.duration);
-                        setIsLoading(false);
                     }
                 }}
                 onPlay={() => {
                     setIsPlaying(true);
-                    setIsLoading(false);
                 }}
-                onPause={() => setIsPlaying(false)}
-                onWaiting={() => setIsLoading(true)}
+                // onPause={() => setIsPlaying(false)}
+                onWaiting={() => setIsLoading(!isLoading && true)}
                 onPlaying={() => setIsLoading(false)}
             />
 
             {/* Loading Spinner */}
-            {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 pointer-events-none">
-                    <div className="w-12 h-12 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
-                </div>
-            )}
+            {/* {isLoading && } */}
 
             {/* Top Overlay with Gradient */}
             <div
@@ -182,7 +184,7 @@ export default function VideoPlayerLocal({ id }: { id: string }) {
             />
 
             {/* Controls */}
-            {!isLoading && (
+            {
                 <div
                     className={`absolute inset-0 flex flex-col justify-between p-4 transition-opacity duration-300 z-10 ${
                         isHovered || !isPlaying ? "opacity-100" : "opacity-0"
@@ -192,95 +194,78 @@ export default function VideoPlayerLocal({ id }: { id: string }) {
                         <span className="font-bold">Video Title</span>
 
                         <div>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button
-                                        variant="ghost"
-                                        className="bg-transparent hover:bg-transparent px-2 py-1 rounded">
-                                        <IoMdSettings
-                                            style={{
-                                                width: "1.5rem",
-                                                height: "1.5rem",
-                                            }}
-                                            color="white"
-                                        />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent className="w-56">
-                                    <DropdownMenuLabel>
-                                        My Account
-                                    </DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuGroup>
-                                        <DropdownMenuItem>
-                                            Profile
-                                            <DropdownMenuShortcut>
-                                                ⇧⌘P
-                                            </DropdownMenuShortcut>
-                                        </DropdownMenuItem>
-                                    </DropdownMenuGroup>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+                            <VideoSettingLocal
+                                quality={quality}
+                                setQuality={setQuality}
+                            />
                         </div>
                     </div>
 
                     {/* Center Controls */}
-                    <div className="absolute inset-0 flex items-center justify-center gap-4">
-                        <div>
-                            <Button
-                                variant="ghost"
-                                onClick={() => {
-                                    const video = videoRef.current;
-                                    if (video) video.currentTime -= 10;
-                                }}
-                                className="bg-transparent hover:bg-transparent rounded z-10 ">
-                                <FaArrowRotateLeft
-                                    style={{
-                                        width: "1.8rem",
-                                        height: "1.8rem",
-                                    }}
-                                    color="white"
-                                />
-                            </Button>
-                        </div>
-                        <div className=" h-20 w-14 flex justify-center items-center">
-                            <Button
-                                variant="ghost"
-                                onClick={togglePlay}
-                                className="bg-transparent hover:bg-transparent  rounded">
-                                {isPlaying ? (
-                                    <FaPause
-                                        color="white"
-                                        style={{
-                                            width: "2rem",
-                                            height: "2rem",
+                    <div className="absolute inset-0 ">
+                        {!isLoading ? (
+                            <div className="h-full flex items-center justify-center gap-4">
+                                <div>
+                                    <Button
+                                        variant="ghost"
+                                        onClick={() => {
+                                            const video = videoRef.current;
+                                            if (video) video.currentTime -= 10;
                                         }}
-                                    />
-                                ) : (
-                                    <FaPlay
-                                        color="white"
+                                        className="bg-transparent hover:bg-transparent rounded z-10 ">
+                                        <FaArrowRotateLeft
+                                            style={{
+                                                width: "1.8rem",
+                                                height: "1.8rem",
+                                            }}
+                                            color="white"
+                                        />
+                                    </Button>
+                                </div>
+                                <div className=" h-20 w-14 flex justify-center items-center">
+                                    <Button
+                                        variant="ghost"
+                                        onClick={togglePlay}
+                                        className="bg-transparent hover:bg-transparent  rounded">
+                                        {isPlaying ? (
+                                            <FaPause
+                                                color="white"
+                                                style={{
+                                                    width: "2rem",
+                                                    height: "2rem",
+                                                }}
+                                            />
+                                        ) : (
+                                            <FaPlay
+                                                color="white"
+                                                style={{
+                                                    width: "1.8rem",
+                                                    height: "1.8rem",
+                                                }}
+                                            />
+                                        )}
+                                    </Button>
+                                </div>
+                                <Button
+                                    onClick={() => {
+                                        const video = videoRef.current;
+                                        if (video) video.currentTime += 10;
+                                    }}
+                                    className="bg-transparent hover:bg-transparent px-4 py-2 ">
+                                    <FaArrowRotateRight
                                         style={{
                                             width: "1.8rem",
                                             height: "1.8rem",
                                         }}
+                                        color="white"
                                     />
-                                )}
-                            </Button>
-                        </div>
-                        <Button
-                            onClick={() => {
-                                const video = videoRef.current;
-                                if (video) video.currentTime += 10;
-                            }}
-                            className="bg-transparent hover:bg-transparent px-4 py-2 ">
-                            <FaArrowRotateRight
-                                style={{
-                                    width: "1.8rem",
-                                    height: "1.8rem",
-                                }}
-                                color="white"
-                            />
-                        </Button>
+                                </Button>
+                            </div>
+                        ) : (
+                            <div className="h-full flex justify-center items-center">
+                                <div className="  w-12 h-12 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Bottom Controls */}
@@ -369,7 +354,7 @@ export default function VideoPlayerLocal({ id }: { id: string }) {
                         </div>
                     </div>
                 </div>
-            )}
+            }
         </div>
     );
 }
