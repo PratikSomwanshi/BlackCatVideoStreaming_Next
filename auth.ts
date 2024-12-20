@@ -114,6 +114,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     user.email = data.email;
                     user.token = data.token;
                     user.isLoggedIn = true;
+                    user.isPremium = data.isPremium;
                     return true;
                 }
 
@@ -134,6 +135,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.email = token.email as string;
                 session.user.token = token.token;
                 session.user.isLoggedIn = token.isLoggedIn; // Set to true if the user is logged in
+                session.user.isPremium = token.isPremium;
             }
             return session;
         },
@@ -147,6 +149,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.email = user.email as string;
                 token.token = user.token;
                 token.isLoggedIn = true;
+                token.isPremium = user.isPremium;
             }
             return token;
         },

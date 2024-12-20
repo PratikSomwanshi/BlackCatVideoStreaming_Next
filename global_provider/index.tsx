@@ -1,4 +1,5 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 import React from "react";
 
@@ -10,7 +11,7 @@ function GlobalProvider({ children }: { children: React.ReactNode }) {
                 defaultTheme="dark"
                 enableSystem={false}
                 disableTransitionOnChange>
-                {children}
+                <SessionProvider>{children}</SessionProvider>
             </ThemeProvider>
         </div>
     );

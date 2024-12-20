@@ -93,6 +93,7 @@ export default function VideoPlayerLocal({ id }: { id: string }) {
 
     const handleProgress = () => {
         const video = videoRef.current;
+
         if (video) {
             setSeek(video.currentTime);
         }
@@ -158,12 +159,12 @@ export default function VideoPlayerLocal({ id }: { id: string }) {
     };
 
     return (
-        <div>
-            <div
-                className="relative w-[1079px] h-[607px] bg-black group"
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}>
-                {/* Video */}
+        <div
+            className="relative w-[1079px] h-[607px] group"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}>
+            {/* Video */}
+            <div>
                 <video
                     ref={videoRef}
                     className="w-full h-full pointer-events-none" // Prevent video from blocking clicks
