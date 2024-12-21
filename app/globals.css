@@ -12,6 +12,10 @@ body {
     background: black; /* Optional: Background color for fullscreen */
 }
 
+.navbar-screen {
+    height: calc(100vh - 4rem);
+}
+
 @layer base {
     :root {
         --background: 0 0% 100%;

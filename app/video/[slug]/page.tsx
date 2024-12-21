@@ -18,7 +18,7 @@ async function VideoPage({ params }: { params: Promise<{ slug: string }> }) {
             <div className="flex justify-center">
                 <div className=" w-[1079px] h-[607px] bg-black ">
                     <PremiumContentLocal
-                        premiumContent={false}
+                        premiumContent={true}
                         premiumUser={!session.user.isPremium}
                     />
                 </div>
