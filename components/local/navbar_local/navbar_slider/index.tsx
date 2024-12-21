@@ -2,22 +2,12 @@
 
 import * as React from "react";
 
-import { Button } from "@/components/ui/button";
-import {
-    Drawer,
-    DrawerClose,
-    DrawerContent,
-    DrawerDescription,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerTitle,
-    DrawerTrigger,
-} from "@/components/ui/drawer";
-import { useTheme } from "next-themes";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import {Button} from "@/components/ui/button";
+import {Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger,} from "@/components/ui/drawer";
+import {useTheme} from "next-themes";
+import {VisuallyHidden} from "@radix-ui/react-visually-hidden";
 import NavbarSliderUser from "./navbar_slider_user";
 import NavbarSliderUserUtility from "./navbar_slider_user_utility";
-import { Separator } from "@radix-ui/react-separator";
 
 export function NavbarSlider() {
     const [isOpen, setIsOpen] = React.useState(false);
@@ -33,7 +23,7 @@ export function NavbarSlider() {
         // Perform any cleanup or state adjustments here
     };
 
-    const { theme } = useTheme();
+    const {theme} = useTheme();
 
     const color = theme === "dark" ? "dark" : "white";
 
@@ -78,17 +68,18 @@ export function NavbarSlider() {
                 </Button>
             </DrawerTrigger>
             <DrawerContent className="h-[75%] 550:h-1/2">
-                <div className="mx-auto w-full  justify-center items-center 550:items-end p-8 gap-10 550:gap-40 flex 550:flex-row flex-col">
+                <div
+                    className="mx-auto w-full  justify-center items-center 550:items-end p-8 gap-10 550:gap-40 flex 550:flex-row flex-col">
                     <VisuallyHidden className="hidden">
                         <DrawerHeader>
                             <DrawerTitle></DrawerTitle>
                         </DrawerHeader>
                     </VisuallyHidden>
                     <div className="">
-                        <NavbarSliderUser />
+                        <NavbarSliderUser/>
                     </div>
                     <div className="">
-                        <NavbarSliderUserUtility />
+                        <NavbarSliderUserUtility/>
                     </div>
                 </div>
             </DrawerContent>

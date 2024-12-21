@@ -1,9 +1,13 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Crown, LogOut, UserRound } from "lucide-react";
-import React from "react";
+import {Avatar, AvatarFallback} from "@/components/ui/avatar";
+import {Button} from "@/components/ui/button";
+import {Crown, LoaderCircle, LogOut, UserRound} from "lucide-react";
+import React, {useState} from "react";
+import {signOut} from "next-auth/react";
 
 function NavbarSliderUser() {
+
+    const [loading, setLoading] = useState(false);
+
     return (
         <div className="space-y-3 ">
             <div className="flex justify-end ">
@@ -36,14 +40,32 @@ function NavbarSliderUser() {
             <div>
                 <Button
                     className="flex justify-start items-center w-full"
-                    variant="ghost">
-                    <LogOut
-                        className="-ms-1 me-2 mb-[0.10rem] opacity-60"
-                        size={16}
-                        strokeWidth={2}
-                        aria-hidden="true"
-                    />
-                    Sign Out
+                    variant="ghost"
+                    onClick={async () => {
+                        setLoading(true);
+                        await signOut();
+                    }}
+                >
+                    {
+
+                        !loading ?
+                            (
+                                <>
+                                    <LogOut
+                                        className="-ms-1 me-2 mb-[0.10rem] opacity-60"
+                                        size={16}
+                                        strokeWidth={2}
+                                        aria-hidden="true"
+                                    />
+                                    Sign Out
+                                </>) :
+                            <div className="animate-spin flex justify-center items-center w-full">
+                                <LoaderCircle style={{
+                                    height: 24,
+                                    width: 24,
+                                }}/>
+                            </div>
+                    }
                 </Button>
             </div>
         </div>
@@ -52,16 +74,4 @@ function NavbarSliderUser() {
 
 export default NavbarSliderUser;
 
-// Dependencies: pnpm install lucide-react
 
-// import { Button } from "@/components/ui/button";
-// import { Archive } from "lucide-react";
-
-// export default function ButtonDemo() {
-//   return (
-//     <Button>
-//       <Archive className="-ms-1 me-2 opacity-60" size={16} strokeWidth={2} aria-hidden="true" />
-//       Button
-//     </Button>
-//   );
-// }

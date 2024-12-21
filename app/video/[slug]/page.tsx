@@ -1,8 +1,8 @@
-import { auth } from "@/auth";
-import { PremiumContentLocal } from "@/components/local/user_premium_local/premium_content_local";
+import {auth} from "@/auth";
+import {PremiumContentLocal} from "@/components/local/user_premium_local/premium_content_local";
 import React from "react";
 
-async function VideoPage({ params }: { params: Promise<{ slug: string }> }) {
+async function VideoPage({params}: { params: Promise<{ slug: string }> }) {
     const slug = (await params).slug;
 
     const session = await auth();
@@ -18,7 +18,7 @@ async function VideoPage({ params }: { params: Promise<{ slug: string }> }) {
             <div className="flex justify-center">
                 <div className=" w-[1079px] h-[607px] bg-black ">
                     <PremiumContentLocal
-                        premiumContent={true}
+                        premiumContent={false}
                         premiumUser={!session.user.isPremium}
                     />
                 </div>
