@@ -7,6 +7,8 @@ async function VideoPage({params}: { params: Promise<{ slug: string }> }) {
 
     const session = await auth();
 
+    console.log(session)
+
     if (!session?.user.isLoggedIn) {
         return <div>Not logged in</div>;
     }
