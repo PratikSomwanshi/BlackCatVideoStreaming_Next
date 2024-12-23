@@ -16,8 +16,15 @@ import * as SliderPrimitive from "@radix-ui/react-slider";
 import { cn } from "@/lib/utils";
 
 import VideoSettingLocal from "../video_setting";
+import { Session } from "next-auth";
 
-export default function VideoPlayerLocal({ id }: { id: string }) {
+export default function VideoPlayerLocal({
+    id,
+    session,
+}: {
+    id: string;
+    session: Session;
+}) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -47,6 +54,13 @@ export default function VideoPlayerLocal({ id }: { id: string }) {
 
             const hls = new Hls();
 
+            hls.config.xhrSetup = (xhr) => {
+                xhr.setRequestHeader(
+                    "Authorization",
+                    `Bearer ${session.user.token}`
+                );
+            };
+
             hls.loadSource(
                 `http://localhost:9091/api/v1/video/hls/123/${quality}/playlist.m3u8`
             );
@@ -59,21 +73,13 @@ export default function VideoPlayerLocal({ id }: { id: string }) {
                 setIsLoading(false);
             });
 
-            // hls.on(Hls.Events.ERROR, (event, data: ErrorData) => {
-            //     if (data.fatal) {
-            //         switch (data.error) {
-            //             case ErrorTypes.NETWORK_ERROR:
-            //                 console.error("Network error:", data);
-            //                 break;
-            //             case ErrorTypes.MEDIA_ERROR:
-            //                 console.error("Media error:", data);
-            //                 break;
-            //             // Handle other errors as needed
-            //             default:
-            //                 console.error("Unknown error:", data);
-            //         }
-            //     }
-            // });
+            hls.on(Hls.Events.ERROR, (event, data) => {
+                if (data.fatal) {
+                    if (data.error) {
+                        console.log(data.error);
+                    }
+                }
+            });
 
             return () => {
                 hls.destroy();
