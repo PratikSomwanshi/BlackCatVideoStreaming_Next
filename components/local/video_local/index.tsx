@@ -58,6 +58,7 @@ export default function VideoPlayerLocal({
 
             const hls = new Hls();
 
+            console.log(`Bearer ${session?.user.token}`);
             hls.config.xhrSetup = (xhr) => {
                 xhr.setRequestHeader(
                     "Authorization",
@@ -86,13 +87,18 @@ export default function VideoPlayerLocal({
             });
 
             return () => {
-                hls.destroy();
+                hls?.destroy();
+                setIsLoading(false);
             };
         } else if (video?.canPlayType("application/vnd.apple.mpegurl")) {
             // For Safari
             const currentTime = video.currentTime;
 
             video.src = `http://localhost:9091/api/v1/video/${id}/480p/playlist.m3u8`;
+            video.setAttribute(
+                "Authorization",
+                `Bearer ${session?.user.token}`
+            );
             video.addEventListener("loadedmetadata", () => {
                 video.currentTime = currentTime; // Resume from saved time
                 video.play();

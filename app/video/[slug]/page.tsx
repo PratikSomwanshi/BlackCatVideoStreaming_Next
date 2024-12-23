@@ -8,24 +8,31 @@ async function VideoPage({ params }: { params: Promise<{ slug: string }> }) {
 
     const session = await auth();
 
-    const res = await fetch(`${HOST.BACKEND_URL}/api/v1/video`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            id: "123",
-        }),
-    });
+    let res;
+    let data;
 
-    const data = await res.json();
+    try {
+        res = await fetch(`${HOST.BACKEND_URL}/api/v1/video`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                id: "123",
+            }),
+        });
+
+        data = await res.json();
+    } catch (error: any) {
+        console.log(error.message);
+    }
 
     if (!session?.user.isLoggedIn) {
         return <div>Not logged in</div>;
     }
 
-    if (!res.ok) {
-        return <div>Video not found</div>;
+    if (!res?.ok) {
+        return <div>Failed to fetch</div>;
     }
 
     console.log(session);
