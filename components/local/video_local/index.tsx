@@ -21,9 +21,13 @@ import { Session } from "next-auth";
 export default function VideoPlayerLocal({
     id,
     session,
+    tittle,
+    description,
 }: {
     id: string;
-    session: Session;
+    session: Session | null;
+    tittle: string;
+    description: string;
 }) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -57,7 +61,7 @@ export default function VideoPlayerLocal({
             hls.config.xhrSetup = (xhr) => {
                 xhr.setRequestHeader(
                     "Authorization",
-                    `Bearer ${session.user.token}`
+                    `Bearer ${session?.user.token}`
                 );
             };
 
@@ -236,7 +240,7 @@ export default function VideoPlayerLocal({
                         }`}>
                         {/* Top Controls */}
                         <div className="flex justify-between text-white z-10">
-                            <span className="font-bold">Video Title</span>
+                            <span className="font-bold">{tittle}</span>
 
                             <div>
                                 <VideoSettingLocal

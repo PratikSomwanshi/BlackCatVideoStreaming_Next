@@ -37,15 +37,19 @@ async function VideoPage({ params }: { params: Promise<{ slug: string }> }) {
                     <PremiumContentLocal
                         premiumContent={data.data.isPremium}
                         premiumUser={session.user.isPremium}
+                        tittle={data.data.title}
+                        description={data.data.description}
                     />
                 </div>
             </div>
             <div className="w-[70%]  mx-auto mt-4 px-2">
                 <div className="">
-                    <h1 className="text-2xl font-bold">Video Title</h1>
+                    <h1 className="text-2xl font-bold">{data.data.title}</h1>
                 </div>
                 <div>
-                    <p className="text-sm text-gray-500">Video Description</p>
+                    <p className="text-sm text-gray-500">
+                        {data.data.description}
+                    </p>
                 </div>
             </div>
         </div>
