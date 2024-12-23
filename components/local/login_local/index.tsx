@@ -1,5 +1,4 @@
 "use client";
-"use client";
 import React, { useState } from "react";
 
 import { Card } from "@/components/ui/card";
@@ -35,6 +34,8 @@ function LoginLocal() {
         console.log("done");
         const { email, password } = data;
 
+        setIsLoading(true);
+
         const res = await signIn("credentials", {
             email,
             password,
@@ -45,11 +46,15 @@ function LoginLocal() {
             console.log("error occured", res);
             if (res.error === "CredentialsSignin") {
                 setApiError("Invalid Password");
+                setIsLoading(false);
                 return;
             }
 
             setApiError(errorMessages.default);
+            setIsLoading(false);
         }
+
+        router.push("/");
     };
 
     const [isLoading, setIsLoading] = useState<boolean>(false);

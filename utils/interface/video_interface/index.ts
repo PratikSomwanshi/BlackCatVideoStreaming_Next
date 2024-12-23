@@ -15,6 +15,14 @@ export interface VideoCardProps {
     fallback_image_url?: string;
 }
 
+export interface IVideoCard {
+    id: string;
+    thumbnail: string;
+    description: string;
+    title: string;
+    isPremium: boolean;
+}
+
 // video player
 
 export interface VideoPlayerProps {

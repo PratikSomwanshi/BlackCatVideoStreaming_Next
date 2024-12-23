@@ -1,16 +1,31 @@
-import {auth} from "@/auth";
-import {PremiumContentLocal} from "@/components/local/user_premium_local/premium_content_local";
+import { auth } from "@/auth";
+import { PremiumContentLocal } from "@/components/local/user_premium_local/premium_content_local";
 import React from "react";
+import { HOST } from "@/utils/configuration/host";
 
-async function VideoPage({params}: { params: Promise<{ slug: string }> }) {
+async function VideoPage({ params }: { params: Promise<{ slug: string }> }) {
     const slug = (await params).slug;
 
     const session = await auth();
 
-    console.log(session)
+    const res = await fetch(`${HOST.BACKEND_URL}/api/v1/video`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            id: "123",
+        }),
+    });
+
+    const data = await res.json();
 
     if (!session?.user.isLoggedIn) {
         return <div>Not logged in</div>;
+    }
+
+    if (!res.ok) {
+        return <div>Video not found</div>;
     }
 
     console.log(session);
@@ -20,8 +35,8 @@ async function VideoPage({params}: { params: Promise<{ slug: string }> }) {
             <div className="flex justify-center">
                 <div className=" w-[1079px] h-[607px] bg-black ">
                     <PremiumContentLocal
-                        premiumContent={false}
-                        premiumUser={!session.user.isPremium}
+                        premiumContent={data.data.isPremium}
+                        premiumUser={session.user.isPremium}
                     />
                 </div>
             </div>

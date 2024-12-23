@@ -1,12 +1,15 @@
-import {Avatar, AvatarFallback} from "@/components/ui/avatar";
-import {Button} from "@/components/ui/button";
-import {Crown, LoaderCircle, LogOut, UserRound} from "lucide-react";
-import React, {useState} from "react";
-import {signOut} from "next-auth/react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Crown, LoaderCircle, LogOut, UserRound } from "lucide-react";
+import React, { useState } from "react";
+import { signOut, useSession } from "next-auth/react";
+import NavbarSliderPremiumBtn from "./navbar_slider_premium_btn";
+import { stat } from "fs";
 
 function NavbarSliderUser() {
-
     const [loading, setLoading] = useState(false);
+
+    const { data: session, status } = useSession();
 
     return (
         <div className="space-y-3 ">
@@ -23,55 +26,46 @@ function NavbarSliderUser() {
                     </AvatarFallback>
                 </Avatar>
             </div>
-            <div>
-                <h2>User Name</h2>
+            <div className="h-6">
+                <h2>{session?.user.username}</h2>
             </div>
             <div>
-                <Button className="flex justify-center items-center">
-                    <Crown
-                        className="-ms-1 me-2 mb-[0.10rem] opacity-60"
-                        size={16}
-                        strokeWidth={2}
-                        aria-hidden="true"
-                    />
-                    Be Premium User
-                </Button>
+                <NavbarSliderPremiumBtn />
             </div>
             <div>
-                <Button
-                    className="flex justify-start items-center w-full"
-                    variant="ghost"
-                    onClick={async () => {
-                        setLoading(true);
-                        await signOut();
-                    }}
-                >
-                    {
-
-                        !loading ?
-                            (
-                                <>
-                                    <LogOut
-                                        className="-ms-1 me-2 mb-[0.10rem] opacity-60"
-                                        size={16}
-                                        strokeWidth={2}
-                                        aria-hidden="true"
-                                    />
-                                    Sign Out
-                                </>) :
+                {status == "authenticated" && (
+                    <Button
+                        className="flex justify-start items-center w-full"
+                        variant="ghost"
+                        onClick={async () => {
+                            setLoading(true);
+                            await signOut();
+                        }}>
+                        {!loading ? (
+                            <>
+                                <LogOut
+                                    className="-ms-1 me-2 mb-[0.10rem] opacity-60"
+                                    size={16}
+                                    strokeWidth={2}
+                                    aria-hidden="true"
+                                />
+                                Sign Out
+                            </>
+                        ) : (
                             <div className="animate-spin flex justify-center items-center w-full">
-                                <LoaderCircle style={{
-                                    height: 24,
-                                    width: 24,
-                                }}/>
+                                <LoaderCircle
+                                    style={{
+                                        height: 24,
+                                        width: 24,
+                                    }}
+                                />
                             </div>
-                    }
-                </Button>
+                        )}
+                    </Button>
+                )}
             </div>
         </div>
     );
 }
 
 export default NavbarSliderUser;
-
-

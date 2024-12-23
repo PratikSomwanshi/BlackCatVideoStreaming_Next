@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
-import Hls from "hls.js";
+import Hls, { ErrorData, ErrorTypes } from "hls.js";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import {
@@ -58,6 +58,22 @@ export default function VideoPlayerLocal({ id }: { id: string }) {
                 video.play();
                 setIsLoading(false);
             });
+
+            // hls.on(Hls.Events.ERROR, (event, data: ErrorData) => {
+            //     if (data.fatal) {
+            //         switch (data.error) {
+            //             case ErrorTypes.NETWORK_ERROR:
+            //                 console.error("Network error:", data);
+            //                 break;
+            //             case ErrorTypes.MEDIA_ERROR:
+            //                 console.error("Media error:", data);
+            //                 break;
+            //             // Handle other errors as needed
+            //             default:
+            //                 console.error("Unknown error:", data);
+            //         }
+            //     }
+            // });
 
             return () => {
                 hls.destroy();

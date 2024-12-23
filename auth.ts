@@ -2,8 +2,8 @@ import Google from "next-auth/providers/google";
 import { HOST } from "./utils/configuration/host";
 import { NEXT_AUTH } from "./utils/configuration/next_auth";
 import NextAuth, { AuthError, CredentialsSignin } from "next-auth";
-import { JWT } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
+import { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
     interface Session {
@@ -46,34 +46,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 const { email, password } = credentials;
 
                 try {
-                    // const res = await fetch(`${HOST.BACKEND_URL}/login`, {
-                    //     method: "POST",
-                    //     headers: {
-                    //         "Content-Type": "application/json",
-                    //     },
-                    //     body: JSON.stringify({ email, password }),
-                    // });
+                    const res = await fetch(
+                        `${HOST.BACKEND_URL}/api/v1/login`,
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ email, password }),
+                        }
+                    );
 
-                    // const data = (await res.json()).data[0];
+                    const data = (await res.json()).data;
 
-                    // console.log("data ", data);
-                    // if (!res.ok) {
-                    //     throw new CredentialsSignin("Invalid credentials");
-                    // }
+                    console.log("data ", data);
+                    if (!res.ok) {
+                        throw new CredentialsSignin("Invalid credentials");
+                    }
 
-                    // const user = {
-                    //     username: data.username as string,
-                    //     email: data.email as string,
-                    //     token: data.token as string,
-                    //     isLoggedIn: true,
-                    //     isPremium: data.isPremium as boolean,
-                    // };
                     const user = {
-                        username: "data.username as string",
-                        email: "data.email as string",
-                        token: "data.token as string",
+                        username: data.username as string,
+                        email: data.email as string,
+                        token: data.token as string,
                         isLoggedIn: true,
-                        isPremium: true,
+                        isPremium: data.isPremiumUser as boolean,
                     };
 
                     return user;
@@ -110,11 +106,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                     const data = (await res.json()).data[0];
 
+                    console.log("data auth ", data);
+
                     user.username = data.username;
                     user.email = data.email;
                     user.token = data.token;
                     user.isLoggedIn = true;
-                    user.isPremium = data.isPremium;
+                    user.isPremium = data.isPremiumUser;
                     return true;
                 }
 
@@ -131,11 +129,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             // console.log("session user ", user);
 
             if (token) {
-                session.user.username = token.username;
+                session.user.username = token.username as string;
                 session.user.email = token.email as string;
-                session.user.token = token.token;
-                session.user.isLoggedIn = token.isLoggedIn; // Set to true if the user is logged in
-                session.user.isPremium = token.isPremium;
+                session.user.token = token.token as string;
+                session.user.isLoggedIn = token.isLoggedIn as boolean; // Set to true if the user is logged in
+                session.user.isPremium = token.isPremium as boolean;
             }
             return session;
         },
