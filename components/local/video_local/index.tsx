@@ -68,7 +68,7 @@ export default function VideoPlayerLocal({
             };
 
             hls.loadSource(
-                `http://blackcat.pratiksomwanshi.online/api/v1/video/hls/123/${quality}/playlist.m3u8`
+                `https://blackcat.pratiksomwanshi.online/api/v1/video/hls/123/${quality}/playlist.m3u8`
             );
             hls.attachMedia(video);
 
