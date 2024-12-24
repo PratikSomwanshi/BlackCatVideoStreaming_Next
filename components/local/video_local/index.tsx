@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 
 import VideoSettingLocal from "../video_setting";
 import { Session } from "next-auth";
+import { HOST } from "@/utils/configuration/host";
 
 export default function VideoPlayerLocal({
     id,
@@ -67,7 +68,7 @@ export default function VideoPlayerLocal({
             };
 
             hls.loadSource(
-                `http://localhost:9091/api/v1/video/hls/123/${quality}/playlist.m3u8`
+                `http://${HOST.BACKEND_URL}/api/v1/video/hls/123/${quality}/playlist.m3u8`
             );
             hls.attachMedia(video);
 
