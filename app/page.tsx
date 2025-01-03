@@ -1,7 +1,12 @@
+import HomeComponentLocal from "@/components/local/home_page";
 import React from "react";
 
 function HomePage() {
-    return <div>HomePage</div>;
+    return (
+        <div>
+            <HomeComponentLocal />
+        </div>
+    );
 }
 
 export default HomePage;
