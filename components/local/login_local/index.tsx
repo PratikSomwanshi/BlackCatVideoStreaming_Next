@@ -76,8 +76,12 @@ function LoginLocal() {
     };
 
     return (
-        <div className="flex h-screen w-screen justify-around items-center">
-            <div className="h-full w-1/2 flex justify-center items-center">
+        <div
+            style={{
+                height: "calc(100vh - 4rem)",
+            }}
+            className="flex justify-around items-center">
+            <div className="h-full w-1/2 min-w-[500px] flex justify-center items-center">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Card className="px-6 py-4 w-[26rem] space-y-4 ">
                         <div>
@@ -149,14 +153,22 @@ function LoginLocal() {
                     </Card>
                 </form>
             </div>
-            <div className="h-full w-1/2 bg-[#3b3439] flex justify-center items-center">
+            <div className="h-full w-1/2 bg-[#3b3439]  justify-center items-center hidden 700:flex">
                 <Image
                     src="/login_hero_image.jpeg"
                     alt="hero"
                     height={100}
                     width={100}
-                    className="h-1/2 w-1/2"
+                    className="h-1/2 w-1/2 hidden 1000:block"
                 />
+                <div className="hidden 700:block 1000:hidden">
+                    <h1 className="text-2xl font-semibold text-white">
+                        Welcome back
+                    </h1>
+                    <p className="text-gray-500 dark:text-gray-400">
+                        Login to your account
+                    </p>
+                </div>
             </div>
         </div>
     );
