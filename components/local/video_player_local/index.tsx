@@ -187,7 +187,7 @@ export default function VideoPlayerLocal({
 
     return (
         <div
-            className="relative  group bg-black text-black h-[38rem] "
+            className="relative  group bg-black text-black h-full"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}>
             {/* Video */}
