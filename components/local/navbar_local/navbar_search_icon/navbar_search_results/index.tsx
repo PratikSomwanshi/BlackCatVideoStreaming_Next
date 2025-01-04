@@ -1,14 +1,14 @@
 import { SearchResults } from "@/utils/interface/search_result_navbar";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
 function NavbarSearchResult({
     result,
     setOpen,
 }: {
     result: SearchResults;
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setOpen: (value: boolean) => void;
 }) {
     return (
         <Link

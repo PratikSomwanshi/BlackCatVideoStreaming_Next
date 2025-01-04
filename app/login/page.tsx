@@ -7,10 +7,11 @@ import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
 function LoginPage() {
-    const { setIsJWTExpired } = useGlobalContext();
+    const { setIsJWTExpired, setIsSearchOpen } = useGlobalContext();
 
     useEffect(() => {
         setIsJWTExpired(false);
+        setIsSearchOpen(false);
     }, []);
 
     return (

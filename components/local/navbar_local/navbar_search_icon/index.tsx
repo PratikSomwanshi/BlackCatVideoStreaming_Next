@@ -12,7 +12,6 @@ import { SearchResults } from "@/utils/interface/search_result_navbar";
 import NavbarSearchResult from "./navbar_search_results";
 
 export default function NavbarSearchIcon({ token }: { token: string }) {
-    const [open, setOpen] = React.useState(false);
     const [searchQuery, setSearchQuery] = React.useState("");
     const [searchResults, setSearchResults] = React.useState<SearchResults[]>(
         []
@@ -20,7 +19,8 @@ export default function NavbarSearchIcon({ token }: { token: string }) {
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState("");
 
-    const { setIsJWTExpired } = useGlobalContext();
+    const { setIsJWTExpired, setIsSearchOpen, isSearchOpen } =
+        useGlobalContext();
 
     React.useEffect(() => {
         if (searchQuery.trim().length === 0) {
@@ -82,17 +82,17 @@ export default function NavbarSearchIcon({ token }: { token: string }) {
     return (
         <>
             <div>
-                <Search color="black" onClick={() => setOpen(true)} />
+                <Search color="black" onClick={() => setIsSearchOpen(true)} />
             </div>
 
-            {open && (
+            {isSearchOpen && (
                 <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-10">
                     <div className="bg-white p-4 rounded-lg w-[95vw] 700:w-1/3 max-h-[80vh] overflow-auto">
                         <div className="flex justify-between items-center mb-2">
                             <h2 className="text-lg font-semibold ">Search</h2>
                             <div>
                                 <Button
-                                    onClick={() => setOpen(false)}
+                                    onClick={() => setIsSearchOpen(false)}
                                     variant="ghost">
                                     <IoMdClose />
                                 </Button>
@@ -124,7 +124,7 @@ export default function NavbarSearchIcon({ token }: { token: string }) {
                                     {searchResults.map((result) => (
                                         <NavbarSearchResult
                                             result={result}
-                                            setOpen={setOpen}
+                                            setOpen={setIsSearchOpen}
                                         />
                                     ))}
                                 </ul>

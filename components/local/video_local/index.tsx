@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { PremiumContentLocal } from "../user_premium_local/premium_content_local";
 import useSWR from "swr";
 import { HOST } from "@/utils/enums/host";
@@ -34,7 +34,11 @@ async function fetch_video(token: string) {
 }
 
 function VideoLocal({ session }: { session: SessionData }) {
-    const { setIsJWTExpired } = useGlobalContext();
+    const { setIsJWTExpired, setIsSearchOpen } = useGlobalContext();
+
+    useEffect(() => {
+        setIsSearchOpen(false);
+    }, []);
 
     const { data, isLoading, error } = useSWR(
         "fetch_video",

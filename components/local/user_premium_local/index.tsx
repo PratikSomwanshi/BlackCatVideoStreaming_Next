@@ -1,12 +1,20 @@
+"use client";
 import { Button } from "@/components/ui/button";
+import useGlobalContext from "@/hooks/useContext/useGlobalContext";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 
 function UserPremiumLocal({
     tittle = "You Should be a Premium User to watch this",
 }: {
     tittle?: string;
 }) {
+    const { setIsSearchOpen } = useGlobalContext();
+
+    useEffect(() => {
+        setIsSearchOpen(false);
+    }, []);
+
     return (
         <div
             className="flex items-center justify-center h-full bg-black "

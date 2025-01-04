@@ -11,6 +11,7 @@ function GlobalProvider({ children }: { children: React.ReactNode }) {
     const [isJWTExpired, setIsJWTExpired] = React.useState(false);
     const [isUserAccountSliderOpen, setIsUserAccountSliderOpen] =
         React.useState(false);
+    const [isSearchOpen, setIsSearchOpen] = React.useState(false);
 
     return (
         <div>
@@ -20,6 +21,8 @@ function GlobalProvider({ children }: { children: React.ReactNode }) {
                     setIsJWTExpired,
                     isUserAccountSliderOpen,
                     setIsUserAccountSliderOpen,
+                    isSearchOpen,
+                    setIsSearchOpen,
                 }}>
                 {children}
                 {isJWTExpired && <SessionExpiredModel />}
