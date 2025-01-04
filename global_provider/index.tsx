@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { IGlobalContext } from "@/utils/interface/context";
+import SessionExpiredModel from "@/components/local/session_expired_model";
 
 export const GlobalContext = React.createContext<IGlobalContext | undefined>(
     undefined
@@ -21,6 +22,7 @@ function GlobalProvider({ children }: { children: React.ReactNode }) {
                     setIsUserAccountSliderOpen,
                 }}>
                 {children}
+                {isJWTExpired && <SessionExpiredModel />}
             </GlobalContext.Provider>
         </div>
     );

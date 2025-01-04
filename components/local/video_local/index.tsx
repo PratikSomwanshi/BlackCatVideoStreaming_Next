@@ -5,12 +5,15 @@ import useSWR from "swr";
 import { HOST } from "@/utils/enums/host";
 import { SessionData } from "@/utils/interface/iron_session";
 import DefaultLoading from "../default_loading";
+import { isSessionExpired } from "@/utils/is_jwt_expired";
+import useGlobalContext from "@/hooks/useContext/useGlobalContext";
 
-async function fetch_video() {
-    const res = await fetch(`${HOST.BACKEND_URL}/api/v1/video`, {
+async function fetch_video(token: string) {
+    const res = await fetch(`${HOST.BACKEND_URL}/api/v1/single/video`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
         },
         body: JSON.stringify({
             id: "123",
@@ -19,15 +22,37 @@ async function fetch_video() {
 
     const data = await res.json();
 
+    if (!res.ok) {
+        if (data.error.code) {
+            throw new Error(data.error.code);
+        }
+
+        throw new Error(data.error.explanation || "Failed to fetch video");
+    }
+
     return data;
 }
 
 function VideoLocal({ session }: { session: SessionData }) {
-    const { data, isLoading, error } = useSWR("fetch_video", fetch_video, {
-        revalidateIfStale: false,
-        revalidateOnFocus: false,
-        revalidateOnMount: true,
-    });
+    const { setIsJWTExpired } = useGlobalContext();
+
+    const { data, isLoading, error } = useSWR(
+        "fetch_video",
+        (url) => fetch_video(session.token!),
+        {
+            revalidateIfStale: false,
+            revalidateOnFocus: false,
+            revalidateOnMount: true,
+            onError: (error) => {
+                if (isSessionExpired(error.message)) {
+                    console.log("jwt error ", error.message);
+                    setIsJWTExpired(true);
+                    return;
+                }
+                console.log("general error ", error.message);
+            },
+        }
+    );
 
     if (isLoading)
         return (
