@@ -8,10 +8,6 @@ import Link from "next/link";
 
 const nav_links = [
     {
-        name: "Home",
-        url: "/",
-    },
-    {
         name: "Shorts",
         url: "/shorts",
     },
@@ -29,7 +25,9 @@ async function NavbarLocal() {
                     <NavbarHamburgerMenu />
                 </div>
 
-                <LogoLocal size={40} />
+                <Link href="/">
+                    <LogoLocal size={40} />
+                </Link>
             </div>
             <div className="h-full w-[20rem] hidden justify-center items-center space-x-8 1000:flex text-black">
                 {nav_links.map((link) => (
