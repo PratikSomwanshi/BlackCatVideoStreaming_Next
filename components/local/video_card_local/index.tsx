@@ -22,7 +22,7 @@ const VideoCardLocal: React.FC<VideoCardProps> = ({
     };
 
     return (
-        <div className="relative group min-h-52 min-w-[22rem] bg-black">
+        <div className="relative group min-h-52 min-w-[22rem] bg-[#01010d]">
             {/* Video Container */}
             <Link href={`/video/${video_id}`} key={imageUrl}>
                 <div
@@ -31,7 +31,7 @@ const VideoCardLocal: React.FC<VideoCardProps> = ({
                         backgroundImage: `url(${
                             imageLoaded ? imageUrl : fallbackImageUrl
                         })`,
-                        backgroundColor: "#333", // Fallback color if the image is unavailable
+                        backgroundColor: "#01010d", // Fallback color if the image is unavailable
                     }}
                     onError={handleImageError} // Trigger fallback image on error
                 >

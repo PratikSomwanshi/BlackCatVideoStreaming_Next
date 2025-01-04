@@ -49,7 +49,7 @@ function HomeComponentLocal() {
                     <VideoCardLocal
                         key={video.id}
                         video_id={video.id}
-                        thumbnail={video.thumbnail || "/gold.jpeg"}
+                        thumbnail={video.thumbnail || "/default_video_card.png"}
                         description={video.description}
                         title={video.title}
                         isVideoPremium={video.isPremium}
