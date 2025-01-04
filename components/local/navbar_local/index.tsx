@@ -5,6 +5,7 @@ import NavbarSearchIcon from "./navbar_search_icon";
 import LogoLocal from "../logo_local";
 import { NavbarButtonsLocal } from "@/components/local/navbar_local/navbar_buttons";
 import Link from "next/link";
+import { getSession } from "@/action/auth";
 
 const nav_links = [
     {
@@ -18,6 +19,8 @@ const nav_links = [
 ];
 
 async function NavbarLocal() {
+    const session = await getSession();
+
     return (
         <div className="h-16  flex items-center justify-between px-4">
             <div className="flex items-center space-x-2">
@@ -37,15 +40,11 @@ async function NavbarLocal() {
                 ))}
             </div>
             <div className="flex gap-4 h-full items-center space-x-2">
-                <div className="hidden 450:flex  gap-4 h-full items-center space-x-2">
+                <div className="flex  gap-2 400:gap-4 h-full items-center space-x-2">
                     {/* COMPONENT: Search */}
                     <div className="h-full">
-                        <div className="hidden 750:flex h-full  items-center space-x-2">
-                            <NavbarSearch />
-                        </div>
-
-                        <div className="h-full 750:hidden flex items-center">
-                            <NavbarSearchIcon />
+                        <div className="h-full  flex items-center">
+                            <NavbarSearchIcon token={session.token!} />
                         </div>
                     </div>
                 </div>

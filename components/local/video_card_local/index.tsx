@@ -22,7 +22,7 @@ const VideoCardLocal: React.FC<VideoCardProps> = ({
     };
 
     return (
-        <div className="relative group min-h-52 min-w-[22rem] bg-[#01010d]">
+        <div className="relative group h-52 min-w-[16rem] w-[22rem] bg-[#01010d]">
             {/* Video Container */}
             <Link href={`/video/${video_id}`} key={imageUrl}>
                 <div

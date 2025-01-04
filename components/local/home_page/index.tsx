@@ -42,9 +42,9 @@ function HomeComponentLocal() {
     }
 
     return (
-        <div className="px-2 py-4 ">
+        <div className="p-1 400:p-2 py-4 ">
             <h2 className="text-2xl font-semibold">Currently Available</h2>
-            <div className="flex gap-2 p-2 home_container">
+            <div className="flex gap-2 p-0 400:p-2 home_container">
                 {data.data.map((video: IVideoCard) => (
                     <VideoCardLocal
                         key={video.id}
