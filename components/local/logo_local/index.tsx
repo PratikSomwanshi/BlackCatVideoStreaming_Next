@@ -1,9 +1,12 @@
-"use client";
+import { getSession } from "@/action/auth";
+import { Crown } from "lucide-react";
 import React from "react";
 
-function LogoLocal({ size = 20 }: { size: number }) {
+async function LogoLocal({ size = 20 }: { size: number }) {
+    const session = await getSession();
+
     return (
-        <div className="hidden 210:inline-block">
+        <div className="hidden 210:flex items-center gap-2">
             <svg
                 width={size}
                 height="41"
@@ -18,6 +21,19 @@ function LogoLocal({ size = 20 }: { size: number }) {
                     strokeLinecap="round"
                     strokeLinejoin="round"></path>
             </svg>
+            <div className="flex items-center">
+                {session.isPremiumUser && (
+                    <Crown
+                        className="-ms-1 me-2 mb-[0.10rem] opacity-60"
+                        size={24}
+                        strokeWidth={2}
+                        aria-hidden="true"
+                        style={{
+                            color: "golden",
+                        }}
+                    />
+                )}
+            </div>
         </div>
     );
 }
