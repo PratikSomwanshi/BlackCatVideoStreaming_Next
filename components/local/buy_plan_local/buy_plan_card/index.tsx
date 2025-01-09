@@ -16,6 +16,7 @@ import { HOST } from "@/utils/enums/host";
 import useGlobalContext from "@/hooks/useContext/useGlobalContext";
 import LoadingSpinnerLocal from "../../loading_spinner";
 import { useRouter } from "next/navigation";
+import { isSessionExpired } from "@/utils/is_jwt_expired";
 
 async function handlePayment(
     url: string,
@@ -39,11 +40,14 @@ async function handlePayment(
         }),
     });
 
+    const data = await response.json();
     if (!response.ok) {
-        throw new Error("Failed to checkout");
+        if (response.status === 401) {
+            throw new Error(data.error.code || "Something went wrong");
+        }
+        throw new Error("Something went wrong");
     }
 
-    const data = await response.json();
     return data;
 }
 
@@ -61,6 +65,8 @@ function BuyPlanCard({ email, token }: { email: string; token: string }) {
     const yearlyPrice = 499;
     const savings = monthlyPrice * 12 - yearlyPrice;
 
+    const { setIsJWTExpired } = useGlobalContext();
+
     const { isMutating, error, trigger } = useSWRMutation(
         "buyPlan",
         handlePayment,
@@ -70,6 +76,11 @@ function BuyPlanCard({ email, token }: { email: string; token: string }) {
                 window.open(data.data.sessionUrl, "_blank");
             },
             onError: (error) => {
+                if (isSessionExpired(error.message)) {
+                    console.log("jwt error ", error.message);
+                    setIsJWTExpired(true);
+                    return;
+                }
                 console.log("error ", error);
             },
         }
