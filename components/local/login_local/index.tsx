@@ -11,7 +11,6 @@ import EmailLocal from "../email_local";
 import PasswordLocal from "../password_local";
 import Image from "next/image";
 import useSWRMutation from "swr/mutation";
-import { mutate } from "swr";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@radix-ui/react-separator";
 import { saveSession } from "@/action/auth";

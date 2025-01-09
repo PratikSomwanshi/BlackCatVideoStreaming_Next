@@ -33,11 +33,11 @@ export function PremiumContentLocal({
                 }
             );
 
+            const data = await res.json();
             if (!res.ok) {
+                console.log("error ", data);
                 throw new Error("Failed to fetch video");
             }
-
-            const data = await res.json();
 
             return data;
         },
@@ -49,6 +49,9 @@ export function PremiumContentLocal({
             refreshWhenHidden: false,
             refreshWhenOffline: false,
             revalidateOnMount: true,
+            onError: (error) => {
+                console.log("general error ", error.message);
+            },
         }
     );
 
@@ -59,7 +62,7 @@ export function PremiumContentLocal({
             </div>
         );
 
-    if (error) return <div>Error...</div>;
+    if (error) return <div>Something Went Wrong...</div>;
 
     if (!premiumContent) {
         return (

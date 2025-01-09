@@ -2,6 +2,7 @@
 import React from "react";
 import { IGlobalContext } from "@/utils/interface/context";
 import SessionExpiredModel from "@/components/local/session_expired_model";
+import WebSocketClient from "@/components/local/websocket_client";
 
 export const GlobalContext = React.createContext<IGlobalContext | undefined>(
     undefined
@@ -26,6 +27,7 @@ function GlobalProvider({ children }: { children: React.ReactNode }) {
                 }}>
                 {children}
                 {isJWTExpired && <SessionExpiredModel />}
+                <WebSocketClient />
             </GlobalContext.Provider>
         </div>
     );
