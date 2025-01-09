@@ -31,6 +31,12 @@ export const saveSession = async (data: SessionData) => {
     return true;
 };
 
+export const makeSessionPremium = async () => {
+    const session = await getSession();
+    session.isPremiumUser = true;
+    await session.save();
+};
+
 export const logout = async () => {
     const session = await getSession();
     session.destroy();

@@ -1,8 +1,13 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import { makeSessionPremium, saveSession } from "@/action/auth";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
+import useSWRMutation from "swr/mutation";
+import { login } from "../login_local";
+import { mutate } from "swr";
 
 function WebSocketClient() {
     const clientRef = useRef<any>(null);
@@ -30,9 +35,9 @@ function WebSocketClient() {
                 // Subscribe to the desired topic
                 const subscription = client.subscribe(
                     "/topic/jetha/login",
-                    (message) => {
+                    async (message) => {
                         console.log("Relogin requested");
-                        // Handle the received message as needed
+                        await makeSessionPremium();
                     }
                 );
 
@@ -41,7 +46,6 @@ function WebSocketClient() {
             },
             (error) => {
                 console.error("Connection error:", error);
-                // Implement reconnection logic or user notification as needed
             }
         );
 
