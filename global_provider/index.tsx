@@ -8,7 +8,13 @@ export const GlobalContext = React.createContext<IGlobalContext | undefined>(
     undefined
 );
 
-function GlobalProvider({ children }: { children: React.ReactNode }) {
+function GlobalProvider({
+    username,
+    children,
+}: {
+    username: string;
+    children: React.ReactNode;
+}) {
     const [isJWTExpired, setIsJWTExpired] = React.useState(false);
     const [isUserAccountSliderOpen, setIsUserAccountSliderOpen] =
         React.useState(false);
@@ -27,7 +33,7 @@ function GlobalProvider({ children }: { children: React.ReactNode }) {
                 }}>
                 {children}
                 {isJWTExpired && <SessionExpiredModel />}
-                <WebSocketClient />
+                <WebSocketClient username={username} />
             </GlobalContext.Provider>
         </div>
     );

@@ -1,19 +1,16 @@
 "use client";
 
-import { makeSessionPremium, saveSession } from "@/action/auth";
-import { useRouter } from "next/navigation";
+import { makeSessionPremium } from "@/action/auth";
 import React, { useEffect, useRef, useState } from "react";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
-import useSWRMutation from "swr/mutation";
-import { login } from "../login_local";
-import { mutate } from "swr";
+import { HOST } from "@/utils/enums/host";
 
-function WebSocketClient() {
+function WebSocketClient({ username }: { username: string }) {
     const clientRef = useRef<any>(null);
 
     useEffect(() => {
-        const socket = new SockJS("http://localhost:9091/ws");
+        const socket = new SockJS(`${HOST.BACKEND_URL}/ws`);
         const client = Stomp.over(socket);
 
         // Configure heartbeat intervals
@@ -34,7 +31,7 @@ function WebSocketClient() {
 
                 // Subscribe to the desired topic
                 const subscription = client.subscribe(
-                    "/topic/jetha/login",
+                    `/topic/${username}/login`,
                     async (message) => {
                         console.log("Relogin requested");
                         await makeSessionPremium();
