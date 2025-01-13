@@ -22,7 +22,7 @@ async function NavbarLocal() {
     const session = await getSession();
 
     return (
-        <div className="h-16  flex items-center justify-between px-4 bg-yellow-200">
+        <div className="h-16  flex items-center justify-between px-4 ">
             <div className="flex items-center space-x-2">
                 <div className="">
                     <NavbarHamburgerMenu />
