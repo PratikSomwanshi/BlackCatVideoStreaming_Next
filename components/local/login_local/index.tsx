@@ -144,15 +144,19 @@ function LoginLocal() {
                             <Separator className="my-8" />
                         </div>
                         <div className="flex flex-col gap-2">
-                            {/* COMPONENT: GOOGLE BUTTON */}
-                            {/* <GoogleLoginButton /> */}
-                            {/* COMPONENT: GITHUB BUTTON */}
-                            {/* <GithubLoginButton /> */}
+                            <p className="text-center text-gray-600 dark:text-gray-300">
+                                Don't have an account?{" "}
+                                <Link
+                                    href="/register"
+                                    className="text-indigo-500">
+                                    Register
+                                </Link>
+                            </p>
                         </div>
                     </Card>
                 </form>
             </div>
-            <div className="h-full w-1/2 bg-[#3b3439]  justify-center items-center hidden 700:flex">
+            <div className="h-full w-1/2 bg-[#172525]  justify-center items-center hidden 700:flex">
                 <Image
                     src="/login_hero_image.jpeg"
                     alt="hero"
