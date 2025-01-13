@@ -21,7 +21,9 @@ export async function NavbarButtonsLocal() {
             <Link href="/login">
                 <Button variant="outline">Sign In</Button>
             </Link>
-            <Button>Buy Plan</Button>
+            <Link href="/go_premium" className="hidden 400:inline-block">
+                <Button>Buy Plan</Button>
+            </Link>
         </div>
     );
 }
