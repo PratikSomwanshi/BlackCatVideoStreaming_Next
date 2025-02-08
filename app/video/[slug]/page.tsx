@@ -16,12 +16,21 @@ async function VideoPage({ params }: { params: Promise<{ slug: string }> }) {
         );
     }
 
+    // if (!session.isPremiumUser) {
+    //     return (
+    //         <div className="overflow-hidden">
+    //             <UserPremiumLocal tittle="Please Upgrade to watch" />
+    //         </div>
+    //     );
+    // }
+
     return (
         <div>
             <VideoLocal
                 session={{
                     ...session,
                 }}
+                videoId={slug}
             />
         </div>
     );

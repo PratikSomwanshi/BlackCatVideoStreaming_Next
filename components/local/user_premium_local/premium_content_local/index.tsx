@@ -12,18 +12,20 @@ export function PremiumContentLocal({
     tittle,
     description,
     session,
+    videoId,
 }: {
     premiumContent: boolean;
     premiumUser: boolean;
     tittle: string;
     description: string;
     session: SessionData;
+    videoId: string;
 }) {
     const { data, isLoading, error } = useSWR(
         "fetch_video_detail",
         async () => {
             const res = await fetch(
-                `${HOST.BACKEND_URL}/api/v1/video/hls/123/1080p/playlist.m3u8`,
+                `${HOST.BACKEND_URL}/api/v1/video/hls/${videoId}/1080p/playlist.m3u8`,
                 {
                     method: "GET",
                     headers: {
@@ -52,6 +54,9 @@ export function PremiumContentLocal({
             onError: (error) => {
                 console.log("general error ", error.message);
             },
+            onSuccess: (data) => {
+                console.log("success ", data);
+            },
         }
     );
 
@@ -62,31 +67,31 @@ export function PremiumContentLocal({
             </div>
         );
 
-    if (error) return <div>Something Went Wrong...</div>;
+    // if (error) {
+    //     <div className="flex justify-center  ">
+    //         <div className="w-full h-full max-w-[1079px] max-h-[607px] ">
+    //             <div
+    //                 className="flex justify-center items-center w-full"
+    //                 style={{
+    //                     height: "calc(100vh - 4rem)",
+    //                 }}>
+    //                 <h2>Something went wrong</h2>
+    //             </div>
+    //         </div>
+    //     </div>;
+    // }
 
-    if (!premiumContent) {
-        return (
-            <VideoPlayerLocal
-                id="123"
-                session={session}
-                tittle={tittle}
-                description={description}
-                filePath={data.fileURL}
-            />
-        );
+    if (error) {
+        return <UserPremiumLocal />;
     }
 
-    if (premiumUser) {
-        return (
-            <VideoPlayerLocal
-                id="123"
-                session={session}
-                tittle={tittle}
-                description={description}
-                filePath={data.fileURL}
-            />
-        );
-    }
-
-    return <UserPremiumLocal />;
+    return (
+        <VideoPlayerLocal
+            id="123"
+            session={session}
+            tittle={tittle}
+            description={description}
+            filePath={data.fileURL}
+        />
+    );
 }
