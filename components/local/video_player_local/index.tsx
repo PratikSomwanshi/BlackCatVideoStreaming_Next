@@ -187,14 +187,14 @@ export default function VideoPlayerLocal({
 
     return (
         <div
-            className="relative  group bg-black text-black h-full"
+            className="relative group bg-black text-white h-full w-full select-none"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}>
-            {/* Video */}
-            <div>
+            {/* Video Element */}
+            <div className="relative w-full h-full flex items-center justify-center">
                 <video
                     ref={videoRef}
-                    className="w-full h-full pointer-events-none" // Prevent video from blocking clicks
+                    className="w-full h-full max-h-full"
                     onTimeUpdate={handleProgress}
                     onLoadedMetadata={() => {
                         const video = videoRef.current;
@@ -202,214 +202,177 @@ export default function VideoPlayerLocal({
                             setDuration(video.duration);
                         }
                     }}
-                    onPlay={() => {
-                        setIsPlaying(true);
-                    }}
+                    onPlay={() => setIsPlaying(true)}
                     onPause={() => setIsPlaying(false)}
                     onWaiting={() => setIsLoading(true)}
                     onPlaying={() => setIsLoading(false)}
+                    onClick={togglePlay}
                 />
 
-                {/* Top Overlay with Gradient */}
-                <div
-                    className={`absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black via-transparent to-transparent transition-opacity duration-300 ${
-                        isHovered || !isPlaying ? "opacity-100" : "opacity-0"
-                    }`}
-                />
-
+                {/* Loading Spinner */}
                 {isLoading && (
-                    <div className="absolute top-[50%] left-[50%] flex justify-center items-center transform -translate-x-1/2 -translate-y-1/2 ">
-                        <div className="w-12 h-12 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
+                    <div className="absolute inset-0 flex justify-center items-center bg-black/20 backdrop-blur-[2px]">
+                        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                )}
+            </div>
+
+            {/* Overlays */}
+            <div
+                className={cn(
+                    "absolute inset-0 transition-opacity duration-500",
+                    isHovered || !isPlaying ? "opacity-100" : "opacity-0"
+                )}>
+                {/* Gradients */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
+
+                {/* Top Bar */}
+                <div className="absolute top-0 left-0 right-0 p-4 md:p-6 flex justify-between items-start">
+                    <div className="flex flex-col gap-1 max-w-[80%]">
+                        <h2 className="text-lg md:text-xl font-bold truncate drop-shadow-lg">
+                            {tittle}
+                        </h2>
+                        <p className="text-xs text-gray-300 line-clamp-1 opacity-80">
+                            {description}
+                        </p>
+                    </div>
+                    <VideoSettingLocal
+                        quality={quality}
+                        setQuality={setQuality}
+                        isFullscreen={isFullscreen}
+                    />
+                </div>
+
+                {/* Center Play/Pause Button (Large) */}
+                {!isLoading && (
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                togglePlay();
+                            }}
+                            className={cn(
+                                "p-6 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all pointer-events-auto",
+                                !isPlaying ? "scale-110 opacity-100" : "scale-100 opacity-0 group-hover:opacity-100"
+                            )}>
+                            {isPlaying ? (
+                                <FaPause className="h-8 w-8 text-white" />
+                            ) : (
+                                <FaPlay className="h-8 w-8 text-white translate-x-0.5" />
+                            )}
+                        </button>
                     </div>
                 )}
 
-                {/* Bottom Overlay with Increased Height and Gradient */}
-                <div
-                    className={`absolute bottom-0 left-0 right-0 h-52 bg-gradient-to-t from-black via-transparent to-transparent transition-opacity duration-300 ${
-                        isHovered || !isPlaying ? "opacity-100" : "opacity-0"
-                    }`}
-                />
+                {/* Bottom Controls */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 space-y-4">
+                    {/* Progress Bar Area */}
+                    <div className="relative flex items-center gap-4 group/slider">
+                        <span className="text-xs font-mono min-w-[40px]">
+                            {formatTime(seek)}
+                        </span>
+                        
+                        <div className="relative flex-1 h-6 flex items-center group">
+                            <SliderPrimitive.Root
+                                ref={sliderRef}
+                                className="relative flex w-full touch-none select-none items-center cursor-pointer h-full"
+                                onMouseMove={handleSliderHover}
+                                onValueChange={handleSeekChange}
+                                onMouseEnter={() => setSliderHoverTime(null)}
+                                onMouseLeave={() => setSliderHoverTime(null)}
+                                min={0}
+                                max={duration || 100}
+                                step={0.1}
+                                value={[seek]}>
+                                <SliderPrimitive.Track className="relative h-1 w-full grow overflow-hidden rounded-full bg-white/20 group-hover:h-1.5 transition-all">
+                                    <SliderPrimitive.Range className="absolute h-full bg-primary" />
+                                </SliderPrimitive.Track>
+                                <SliderPrimitive.Thumb className="block h-3 w-3 rounded-full border border-primary bg-white ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 opacity-0 group-hover:opacity-100" />
+                            </SliderPrimitive.Root>
 
-                {/* Controls */}
-                {
-                    <div
-                        className={`absolute inset-0 flex flex-col justify-between p-1 300:p-4 transition-opacity duration-300 z-10 ${
-                            isHovered || !isPlaying
-                                ? "opacity-100"
-                                : "opacity-0"
-                        }`}>
-                        {/* Top Controls */}
-                        <div className="flex justify-between text-white z-10">
-                            <span className="font-medium 400:font-bold">
-                                {tittle}
-                            </span>
-
-                            <div>
-                                <VideoSettingLocal
-                                    quality={quality}
-                                    setQuality={setQuality}
-                                    isFullscreen={isFullscreen}
-                                />
-                            </div>
-                        </div>
-
-                        {/* Center Controls */}
-                        <div className="absolute inset-0 ">
-                            {!isLoading && (
-                                <div className="h-full flex items-center justify-center gap-1 300:gap-4">
-                                    <div>
-                                        <Button
-                                            variant="ghost"
-                                            onClick={() => {
-                                                const video = videoRef.current;
-                                                if (video)
-                                                    video.currentTime -= 10;
-                                            }}
-                                            className="bg-transparent hover:bg-transparent rounded z-10 ">
-                                            <FaArrowRotateLeft
-                                                style={{
-                                                    width: "1.5em",
-                                                    height: "1.5em",
-                                                }}
-                                                color="white"
-                                            />
-                                        </Button>
-                                    </div>
-                                    <div className=" h-20 w-14 flex justify-center items-center">
-                                        <Button
-                                            variant="ghost"
-                                            onClick={togglePlay}
-                                            className="bg-transparent hover:bg-transparent  rounded">
-                                            {isPlaying ? (
-                                                <FaPause
-                                                    color="white"
-                                                    style={{
-                                                        width: "1.6em",
-                                                        height: "1.6em",
-                                                    }}
-                                                />
-                                            ) : (
-                                                <FaPlay
-                                                    color="white"
-                                                    style={{
-                                                        width: "1.5em",
-                                                        height: "1.5em",
-                                                    }}
-                                                />
-                                            )}
-                                        </Button>
-                                    </div>
-                                    <Button
-                                        variant="ghost"
-                                        onClick={() => {
-                                            const video = videoRef.current;
-                                            if (video) video.currentTime += 10;
-                                        }}
-                                        className="bg-transparent hover:bg-transparent px-4 py-2 ">
-                                        <FaArrowRotateRight
-                                            style={{
-                                                width: "1.4em",
-                                                height: "1.4em",
-                                            }}
-                                            color="white"
-                                        />
-                                    </Button>
+                            {/* Hover Time Indicator */}
+                            {sliderHoverTime !== null && (
+                                <div
+                                    className="absolute -top-8 px-2 py-1 bg-black/90 border border-white/10 text-[10px] rounded transform -translate-x-1/2"
+                                    style={{
+                                        left: `${(sliderHoverTime / duration) * 100}%`,
+                                    }}>
+                                    {formatTime(sliderHoverTime)}
                                 </div>
                             )}
                         </div>
 
-                        {/* Bottom Controls */}
-                        <div className="flex flex-col  text-white ">
-                            <div className="flex  justify-end items-center relative">
-                                <span>{formatTime(seek)}</span>
+                        <span className="text-xs font-mono min-w-[40px] text-right">
+                            {formatTime(duration)}
+                        </span>
+                    </div>
 
-                                <SliderPrimitive.Root
-                                    ref={sliderRef}
-                                    className={cn(
-                                        "relative flex w-full touch-none select-none items-center px-1 cursor-pointer transition-[height] duration-300 ease-in-out h-1.5 hover:h-[0.65rem]"
-                                    )}
-                                    onMouseMove={handleSliderHover}
-                                    onValueChange={handleSeekChange}
-                                    onMouseEnter={() =>
-                                        setSliderHoverTime(null)
-                                    }
-                                    onMouseLeave={() =>
-                                        setSliderHoverTime(null)
-                                    }
-                                    min={0}
-                                    max={duration}
-                                    step={0.1}
-                                    value={[seek]}>
-                                    <SliderPrimitive.Track className="relative h-full w-full grow overflow-hidden rounded-full bg-slate-500 bg-opacity-50">
-                                        <SliderPrimitive.Range className="absolute h-full bg-white rounded-lg" />
-                                    </SliderPrimitive.Track>
-                                </SliderPrimitive.Root>
-
-                                <span>{formatTime(duration - seek)}</span>
-
-                                {sliderHoverTime !== null && (
-                                    <div
-                                        className="absolute -top-4 left-0 h-5 px-1 z-20 bg-black text-white text-sm rounded"
-                                        style={{
-                                            left: `${
-                                                (sliderHoverTime / duration) *
-                                                100
-                                            }%`,
-                                            transform: "translateX(-50%)",
-                                            bottom: "30px",
-                                        }}>
-                                        {formatTime(sliderHoverTime)}
-                                    </div>
+                    {/* Buttons Row */}
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 md:gap-4">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => {
+                                    if (videoRef.current) videoRef.current.currentTime -= 10;
+                                }}
+                                className="hover:bg-white/10 rounded-full h-10 w-10">
+                                <FaArrowRotateLeft className="h-5 w-5" />
+                            </Button>
+                            
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={togglePlay}
+                                className="hover:bg-white/10 rounded-full h-10 w-10">
+                                {isPlaying ? (
+                                    <FaPause className="h-5 w-5" />
+                                ) : (
+                                    <FaPlay className="h-5 w-5 translate-x-0.5" />
                                 )}
-                            </div>
-                            <div className="hidden 300:flex justify-between items-center">
-                                <div className="flex items-center z-10">
-                                    <label htmlFor="volume" className="mr-2">
-                                        <Volume2
-                                            style={{
-                                                width: "1.5em",
-                                                height: "1.5em",
-                                            }}
-                                            color="white"
-                                        />
-                                    </label>
+                            </Button>
+
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => {
+                                    if (videoRef.current) videoRef.current.currentTime += 10;
+                                }}
+                                className="hover:bg-white/10 rounded-full h-10 w-10">
+                                <FaArrowRotateRight className="h-5 w-5" />
+                            </Button>
+
+                            <div className="flex items-center gap-2 ml-2 group/volume">
+                                <Volume2 className="h-5 w-5 text-gray-400 group-hover/volume:text-white transition-colors" />
+                                <div className="w-0 group-hover/volume:w-24 overflow-hidden transition-all duration-300">
                                     <Slider
                                         min={0}
                                         max={1}
                                         step={0.01}
                                         value={[volume]}
                                         onValueChange={handleVolumeChange}
-                                        className="w-32 z-10 cursor-pointer"
+                                        className="w-24"
                                     />
                                 </div>
-                                <Button
-                                    className="z-10 bg-transparent hover:bg-transparent"
-                                    variant="ghost"
-                                    onClick={() => {
-                                        const container =
-                                            videoRef.current?.parentElement;
-                                        if (document.fullscreenElement) {
-                                            // If in fullscreen mode, exit fullscreen
-                                            document.exitFullscreen();
-                                        } else if (container) {
-                                            // If not in fullscreen, enter fullscreen
-                                            if (container.requestFullscreen) {
-                                                container.requestFullscreen();
-                                            }
-                                        }
-                                    }}>
-                                    <RxEnterFullScreen
-                                        style={{
-                                            width: "1.5em",
-                                            height: "1.5em",
-                                        }}
-                                        color="white"
-                                    />
-                                </Button>
                             </div>
                         </div>
+
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                                const container = videoRef.current?.parentElement?.parentElement;
+                                if (document.fullscreenElement) {
+                                    document.exitFullscreen();
+                                } else if (container?.requestFullscreen) {
+                                    container.requestFullscreen();
+                                }
+                            }}
+                            className="hover:bg-white/10 rounded-full h-10 w-10">
+                            <RxEnterFullScreen className="h-5 w-5" />
+                        </Button>
                     </div>
-                }
+                </div>
             </div>
         </div>
     );

@@ -84,24 +84,57 @@ function VideoLocal({
 
     if (data && showVideo(data.data.isPremium, session.isPremiumUser)) {
         return (
-            <div className="mx-auto">
-                <div className="flex justify-center">
-                    <div className="w-full h-full max-w-[1079px] max-h-[607px]">
-                        <PremiumContentLocal
-                            session={session}
-                            premiumContent={data.data.isPremium}
-                            premiumUser={session.isPremiumUser}
-                            tittle={data.data.title}
-                            description={data.data.description}
-                            videoId={data.data.id}
-                        />
+            <div className="bg-black/95 min-h-[calc(100vh-4rem)]">
+                <div className="container mx-auto px-0 md:px-4 py-0 md:py-6">
+                    <div className="flex flex-col lg:flex-row gap-6">
+                        {/* Player Column */}
+                        <div className="flex-1">
+                            <div className="aspect-video w-full bg-black shadow-2xl md:rounded-xl overflow-hidden ring-1 ring-white/10">
+                                <PremiumContentLocal
+                                    session={session}
+                                    premiumContent={data.data.isPremium}
+                                    premiumUser={session.isPremiumUser}
+                                    tittle={data.data.title}
+                                    description={data.data.description}
+                                    videoId={data.data.id}
+                                />
+                            </div>
+                            
+                            <div className="mt-6 px-4 md:px-0">
+                                <div className="flex flex-col gap-4">
+                                    <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white leading-tight">
+                                        {data.data.title}
+                                    </h1>
+                                    
+                                    <div className="flex items-center gap-4 py-4 border-y border-white/10">
+                                        <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center font-bold text-primary-foreground">
+                                            BC
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-white">BlackCat Streaming</p>
+                                            <p className="text-xs text-muted-foreground">Premium Content</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-white/5 rounded-xl p-4 mt-2">
+                                        <p className="text-sm md:text-base text-gray-300 whitespace-pre-wrap leading-relaxed">
+                                            {data.data.description}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Sidebar Column (Future recommendations can go here) */}
+                        <div className="w-full lg:w-[350px] px-4 md:px-0 pb-12">
+                            <h3 className="text-white font-bold mb-4 uppercase text-xs tracking-widest opacity-50">Related Content</h3>
+                            <div className="space-y-4">
+                                <div className="p-4 rounded-xl border border-white/10 bg-white/5 text-gray-400 text-sm italic text-center py-12">
+                                    More videos coming soon...
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div className="w-[70%] mx-auto mt-4 px-2">
-                    <h1 className="text-2xl font-bold">{data.data.title}</h1>
-                    <p className="text-sm text-gray-500">
-                        {data.data.description}
-                    </p>
                 </div>
             </div>
         );

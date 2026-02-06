@@ -23,15 +23,15 @@ async function NavbarLocal() {
 
     return (
         <div className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="container flex h-16 items-center justify-between px-4">
+            <div className="container mx-auto flex h-16 items-center justify-between px-4">
                 <div className="flex items-center gap-4">
-                    <div className="md:hidden">
+                    <div className="md:hidden flex items-center">
                         <NavbarHamburgerMenu />
                     </div>
 
                     <Link href="/" className="flex items-center gap-2">
                         <LogoLocal size={32} />
-                        <span className="hidden font-bold sm:inline-block">BlackCat</span>
+                        <span className="hidden font-bold sm:inline-block text-foreground">BlackCat</span>
                     </Link>
 
                     <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
@@ -39,7 +39,7 @@ async function NavbarLocal() {
                             <Link
                                 key={link.url}
                                 href={link.url}
-                                className="transition-colors hover:text-foreground/80 text-foreground/60">
+                                className="transition-colors hover:text-foreground text-foreground/60">
                                 {link.name}
                             </Link>
                         ))}
@@ -48,12 +48,14 @@ async function NavbarLocal() {
                 
                 <div className="flex items-center gap-4">
                     {/* COMPONENT: Search */}
-                    <div className="flex items-center">
+                    <div className="flex items-center justify-center">
                         <NavbarSearchIcon token={session.token!} />
                     </div>
                     
                     {/* COMPONENT: buy plan */}
-                    <NavbarButtonsLocal />
+                    <div className="flex items-center">
+                        <NavbarButtonsLocal />
+                    </div>
                 </div>
             </div>
         </div>

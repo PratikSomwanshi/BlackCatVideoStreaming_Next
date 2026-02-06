@@ -80,49 +80,70 @@ export default function NavbarSearchIcon({ token }: { token: string }) {
     }, [searchQuery]);
 
     return (
-        <>
-            <div>
-                <Search color="black" onClick={() => setIsSearchOpen(true)} />
-            </div>
+        <div className="flex items-center">
+            <Button 
+                variant="ghost" 
+                size="icon" 
+                className="rounded-full hover:bg-muted"
+                onClick={() => setIsSearchOpen(true)}
+            >
+                <Search className="h-5 w-5 text-foreground/70 hover:text-foreground" />
+            </Button>
 
             {isSearchOpen && (
-                <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-10">
-                    <div className="bg-white p-4 rounded-lg w-[95vw] 700:w-1/3 max-h-[80vh] overflow-auto">
-                        <div className="flex justify-between items-center mb-2">
-                            <h2 className="text-lg font-semibold ">Search</h2>
-                            <div>
-                                <Button
-                                    onClick={() => setIsSearchOpen(false)}
-                                    variant="ghost">
-                                    <IoMdClose />
-                                </Button>
+                <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex justify-center items-start pt-[10vh] z-[100]">
+                    <div className="bg-card border shadow-2xl rounded-2xl w-[95vw] max-w-2xl max-h-[80vh] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200">
+                        <div className="p-4 border-b flex justify-between items-center">
+                            <h2 className="text-xl font-bold px-2">Search Videos</h2>
+                            <Button
+                                onClick={() => setIsSearchOpen(false)}
+                                variant="ghost"
+                                size="icon"
+                                className="rounded-full"
+                            >
+                                <IoMdClose className="h-5 w-5" />
+                            </Button>
+                        </div>
+                        
+                        <div className="p-4">
+                            <div className="relative">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                <input
+                                    autoFocus
+                                    type="text"
+                                    className="w-full bg-muted/50 border-none rounded-xl py-3 pl-10 pr-4 focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                                    placeholder="Type to search content..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
                             </div>
                         </div>
-                        <input
-                            type="text"
-                            className="w-full p-2 border border-gray-300 rounded mb-4"
-                            placeholder="Type a command or search..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                        <div className="max-h-[60vh] overflow-y-auto">
+
+                        <div className="flex-1 overflow-y-auto px-4 pb-4">
                             {loading && (
-                                <div className="flex items-center justify-center h-6">
-                                    <LoadingSpinnerLocal size={20} />
+                                <div className="flex flex-col items-center justify-center py-12 gap-2 text-muted-foreground">
+                                    <LoadingSpinnerLocal size={32} />
+                                    <p className="text-sm">Searching...</p>
                                 </div>
                             )}
                             {error && (
-                                <p className="text-red-500">Error: {error}</p>
+                                <div className="p-4 bg-destructive/10 text-destructive rounded-xl text-center">
+                                    Error: {error}
+                                </div>
                             )}
                             {!loading &&
                                 !error &&
+                                searchQuery.trim().length > 3 &&
                                 searchResults.length === 0 && (
-                                    <p>No results found.</p>
+                                    <div className="py-12 text-center text-muted-foreground">
+                                        No results found for "{searchQuery}"
+                                    </div>
                                 )}
                             {!loading && !error && searchResults.length > 0 && (
-                                <ul>
+                                <ul className="space-y-2">
                                     {searchResults.map((result) => (
                                         <NavbarSearchResult
+                                            key={result.id}
                                             result={result}
                                             setOpen={setIsSearchOpen}
                                         />
@@ -133,6 +154,6 @@ export default function NavbarSearchIcon({ token }: { token: string }) {
                     </div>
                 </div>
             )}
-        </>
+        </div>
     );
 }
