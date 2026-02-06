@@ -100,66 +100,65 @@ function BuyPlanCard({ email, token }: { email: string; token: string }) {
     }
 
     return (
-        <div className="w-full max-w-sm  h-1/2">
-            <Card className="w-full max-w-sm  h-full">
-                <CardHeader>
-                    <CardTitle className="text-2xl font-bold text-center">
-                        Buy The Plan
+        <div className="w-full max-w-md">
+            <Card className="w-full shadow-xl border-border">
+                <CardHeader className="space-y-1">
+                    <CardTitle className="text-3xl font-bold text-center">
+                        Choose Your Plan
                     </CardTitle>
-                    <CardDescription className="text-center">
-                        Choose the best plan for you
+                    <CardDescription className="text-center text-base">
+                        Unlock the full experience with our premium plans
                     </CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <div className="flex items-center justify-center space-x-2 mb-6">
+                <CardContent className="space-y-6">
+                    <div className="flex items-center justify-center space-x-4 p-4 bg-muted/50 rounded-lg">
                         <span
-                            className={`text-sm transition-colors duration-200 ${
-                                !isYearly
-                                    ? "text-primary font-medium"
-                                    : "text-muted-foreground"
+                            className={`text-sm font-medium transition-colors ${
+                                !isYearly ? "text-primary" : "text-muted-foreground"
                             }`}>
                             Monthly
                         </span>
                         <Switch
                             checked={isYearly}
                             onCheckedChange={setIsYearly}
-                            aria-label="Toggle between monthly and yearly billing"
+                            aria-label="Toggle billing cycle"
                         />
                         <span
-                            className={`text-sm transition-colors duration-200 ${
-                                isYearly
-                                    ? "text-primary font-medium"
-                                    : "text-muted-foreground"
+                            className={`text-sm font-medium transition-colors ${
+                                isYearly ? "text-primary" : "text-muted-foreground"
                             }`}>
                             Yearly
                         </span>
                     </div>
-                    <div className="text-center space-y-2">
-                        <div className="text-4xl font-bold transition-all duration-200 ease-in-out">
-                            ${isYearly ? yearlyPrice : monthlyPrice}
+                    
+                    <div className="text-center space-y-2 py-4">
+                        <div className="flex items-center justify-center gap-1">
+                            <span className="text-5xl font-bold tracking-tight">
+                                ${isYearly ? yearlyPrice : monthlyPrice}
+                            </span>
+                            <span className="text-muted-foreground self-end mb-2">
+                                /{isYearly ? "year" : "month"}
+                            </span>
                         </div>
-                        <div className="text-sm text-muted-foreground">
-                            per {isYearly ? "year" : "month"}
-                        </div>
-                        <div className="h-2">
-                            {" "}
-                            {/* Fixed height container for savings message */}
+                        
+                        <div className="h-6 flex items-center justify-center">
                             {isYearly && (
-                                <div className="text-sm text-green-600 font-medium animate-fade-in">
+                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
                                     Save ${savings} per year
-                                </div>
+                                </span>
                             )}
                         </div>
                     </div>
                 </CardContent>
-                <CardFooter>
+                <CardFooter className="pb-8">
                     {isMutating ? (
-                        <Button className="w-full" disabled>
-                            <LoadingSpinnerLocal size={20} />
+                        <Button className="w-full py-6" disabled>
+                            <LoadingSpinnerLocal size={24} />
                         </Button>
                     ) : (
                         <Button
-                            className="w-full"
+                            size="lg"
+                            className="w-full text-lg font-semibold py-6 shadow-md hover:shadow-lg transition-all"
                             onClick={handleClickBuyPlan.bind(
                                 null,
                                 isYearly,

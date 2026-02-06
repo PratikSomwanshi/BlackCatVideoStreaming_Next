@@ -12,29 +12,30 @@ async function BuyPlanLocal() {
     }
 
     return (
-        <div
-            style={{
-                height: "calc(100vh - 4rem)",
-            }}
-            className="flex justify-center  items-center gap-1">
-            <div className="w-full 400:w-1/2 flex justify-center items-center m-1">
+        <div className="flex min-h-[calc(100vh-4rem)] w-full">
+            {/* Left side: Plan Card */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-6 bg-background">
                 <BuyPlanCard
                     email={session.email as string}
                     token={session.token as string}
                 />
             </div>
-            <div
-                className="hidden w-1/2 800:flex justify-center items-center bg-black"
-                style={{
-                    height: "calc(100vh - 4rem)",
-                }}>
+
+            {/* Right side: Image (Hidden on mobile) */}
+            <div className="hidden lg:flex w-1/2 bg-black items-center justify-center relative overflow-hidden">
                 <Image
                     src="/buy_plan.jpeg"
-                    alt="Buy Plan"
-                    width={100}
-                    height={100}
-                    className="h-full w-1/2"
+                    alt="Premium Plan"
+                    fill
+                    className="object-cover opacity-80"
+                    priority
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-center pb-20">
+                     <div className="text-center text-white p-6 max-w-lg">
+                        <h2 className="text-4xl font-bold mb-2">Upgrade to Premium</h2>
+                        <p className="text-lg text-gray-200">Experience ad-free streaming and exclusive content.</p>
+                     </div>
+                </div>
             </div>
         </div>
     );

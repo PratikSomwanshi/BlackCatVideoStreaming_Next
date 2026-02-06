@@ -22,34 +22,39 @@ async function NavbarLocal() {
     const session = await getSession();
 
     return (
-        <div className="h-16  flex items-center justify-between px-4 ">
-            <div className="flex items-center space-x-2">
-                <div className="">
-                    <NavbarHamburgerMenu />
-                </div>
-
-                <Link href="/">
-                    <LogoLocal size={40} />
-                </Link>
-            </div>
-            <div className="h-full w-[20rem] hidden justify-center items-center space-x-8 1000:flex text-black">
-                {nav_links.map((link) => (
-                    <Link key={link.url} href={link.url}>
-                        {link.name}
-                    </Link>
-                ))}
-            </div>
-            <div className="flex gap-4 h-full items-center space-x-2">
-                <div className="flex  gap-2 400:gap-4 h-full items-center space-x-2">
-                    {/* COMPONENT: Search */}
-                    <div className="h-full">
-                        <div className="h-full  flex items-center">
-                            <NavbarSearchIcon token={session.token!} />
-                        </div>
+        <div className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="container flex h-16 items-center justify-between px-4">
+                <div className="flex items-center gap-4">
+                    <div className="md:hidden">
+                        <NavbarHamburgerMenu />
                     </div>
+
+                    <Link href="/" className="flex items-center gap-2">
+                        <LogoLocal size={32} />
+                        <span className="hidden font-bold sm:inline-block">BlackCat</span>
+                    </Link>
+
+                    <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+                        {nav_links.map((link) => (
+                            <Link
+                                key={link.url}
+                                href={link.url}
+                                className="transition-colors hover:text-foreground/80 text-foreground/60">
+                                {link.name}
+                            </Link>
+                        ))}
+                    </nav>
                 </div>
-                {/* COMPONENT: buy plan */}
-                <NavbarButtonsLocal />
+                
+                <div className="flex items-center gap-4">
+                    {/* COMPONENT: Search */}
+                    <div className="flex items-center">
+                        <NavbarSearchIcon token={session.token!} />
+                    </div>
+                    
+                    {/* COMPONENT: buy plan */}
+                    <NavbarButtonsLocal />
+                </div>
             </div>
         </div>
     );

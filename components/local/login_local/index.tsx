@@ -75,56 +75,37 @@ function LoginLocal() {
     };
 
     return (
-        <div
-            style={{
-                height: "calc(100vh - 4rem)",
-            }}
-            className="flex justify-around items-center">
-            <div className="h-full w-1/2 min-w-[500px] flex justify-center items-center">
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <Card className="px-6 py-4 w-[26rem] space-y-4 ">
-                        <div>
-                            <h1 className="text-2xl font-semibold">Login</h1>
-                            <p className="text-gray-500 dark:text-gray-400">
-                                Login to your account
+        <div className="flex min-h-[calc(100vh-4rem)] w-full">
+            {/* Left side: Form */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-6 bg-background">
+                <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md">
+                    <Card className="p-8 shadow-xl border-border space-y-6">
+                        <div className="space-y-2 text-center">
+                            <h1 className="text-3xl font-bold tracking-tight">Login</h1>
+                            <p className="text-muted-foreground">
+                                Enter your credentials to access your account
                             </p>
                         </div>
-                        <div>
-                            <div>
-                                <div className="space-y-2">
-                                    {/* COMPONENT: Email */}
-
-                                    <EmailLocal register={register} />
-
-                                    {/* COMPONENT: Password */}
-                                    <div>
-                                        <PasswordLocal register={register} />
-                                    </div>
-                                </div>
-                            </div>
+                        
+                        <div className="space-y-4">
+                            <EmailLocal register={register} />
+                            <PasswordLocal register={register} />
                         </div>
+
                         <div>
-                            {!apiError && errors && (
-                                <div className="text-red-500 dark:text-red-400 h-10">
-                                    {(errors.email && errors.email.message) ||
-                                        (errors.password &&
-                                            errors.password.message)}
-                                </div>
-                            )}
-                            {apiError && (
-                                <div className="text-red-500 dark:text-red-400 h-10">
-                                    {apiError}
+                            {(errors.email || errors.password || apiError) && (
+                                <div className="text-destructive text-sm font-medium text-center">
+                                    {errors.email?.message || errors.password?.message || apiError}
                                 </div>
                             )}
                         </div>
-                        {/* COMPONENT: Login Button */}
-                        <div className="w-full flex justify-center pt-4 ">
+
+                        <div className="pt-2">
                             <Button
                                 disabled={isMutating}
-                                data-loading={isMutating}
                                 type="submit"
-                                className="group relative disabled:opacity-100 w-[80%]">
-                                <span className="group-data-[loading=true]:text-transparent ">
+                                className="w-full relative">
+                                <span className={isMutating ? "invisible" : ""}>
                                     Login
                                 </span>
                                 {isMutating && (
@@ -133,22 +114,29 @@ function LoginLocal() {
                                             className="animate-spin"
                                             size={16}
                                             strokeWidth={2}
-                                            aria-hidden="true"
                                         />
                                     </div>
                                 )}
                             </Button>
                         </div>
-                        {/* COMPONENT: Seperator */}
-                        <div>
-                            <Separator className="my-8" />
+
+                        <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                                <Separator className="w-full" />
+                            </div>
+                            <div className="relative flex justify-center text-xs uppercase">
+                                <span className="bg-card px-2 text-muted-foreground">
+                                    Or
+                                </span>
+                            </div>
                         </div>
-                        <div className="flex flex-col gap-2">
-                            <p className="text-center text-gray-600 dark:text-gray-300">
+
+                        <div className="text-center text-sm">
+                            <p className="text-muted-foreground">
                                 Don't have an account?{" "}
                                 <Link
                                     href="/register"
-                                    className="text-indigo-500">
+                                    className="text-primary hover:underline font-medium">
                                     Register
                                 </Link>
                             </p>
@@ -156,21 +144,21 @@ function LoginLocal() {
                     </Card>
                 </form>
             </div>
-            <div className="h-full w-1/2 bg-[#172525]  justify-center items-center hidden 700:flex">
+
+            {/* Right side: Image (Hidden on mobile) */}
+            <div className="hidden lg:flex w-1/2 bg-muted items-center justify-center relative overflow-hidden">
                 <Image
                     src="/login_hero_image.jpeg"
-                    alt="hero"
-                    height={100}
-                    width={100}
-                    className="h-1/2 w-1/2 hidden 1000:block"
+                    alt="Login Hero"
+                    fill
+                    className="object-cover"
+                    priority
                 />
-                <div className="hidden 700:block 1000:hidden">
-                    <h1 className="text-2xl font-semibold text-white">
-                        Welcome back
-                    </h1>
-                    <p className="text-gray-500 dark:text-gray-400">
-                        Login to your account
-                    </p>
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                     <div className="text-center text-white p-6">
+                        <h2 className="text-4xl font-bold mb-4">Welcome Back</h2>
+                        <p className="text-lg text-gray-200">Stream your favorite content anytime, anywhere.</p>
+                     </div>
                 </div>
             </div>
         </div>
