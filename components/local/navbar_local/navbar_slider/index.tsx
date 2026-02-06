@@ -79,22 +79,34 @@ export function NavbarSlider({
                     </svg>
                 </Button>
             </DrawerTrigger>
-            <DrawerContent className="h-[75%] 550:h-1/2">
-                <div className="mx-auto w-full  justify-center items-center 550:items-end p-8 gap-10 550:gap-40 flex 550:flex-row flex-col">
-                    <VisuallyHidden className="hidden">
-                        <DrawerHeader>
-                            <DrawerTitle></DrawerTitle>
-                        </DrawerHeader>
-                    </VisuallyHidden>
-                    <div className="">
-                        <NavbarSliderUser
-                            username={username}
-                            isPremiumUser={isPremiumUser}
-                            isLoggedIn={isLoggedIn}
-                        />
+            <DrawerContent className="max-h-[85vh] outline-none">
+                <VisuallyHidden>
+                    <DrawerHeader>
+                        <DrawerTitle>Navigation Menu</DrawerTitle>
+                    </DrawerHeader>
+                </VisuallyHidden>
+                
+                <div className="mx-auto w-full max-w-2xl overflow-y-auto px-6 py-8">
+                    <div className="flex flex-col md:flex-row gap-8 md:gap-12">
+                        {/* User Profile Section */}
+                        <div className="flex-1 md:max-w-[240px]">
+                            <NavbarSliderUser
+                                username={username}
+                                isPremiumUser={isPremiumUser}
+                                isLoggedIn={isLoggedIn}
+                            />
+                        </div>
+                        
+                        {/* Links Section */}
+                        <div className="flex-1">
+                            <NavbarSliderUserUtility />
+                        </div>
                     </div>
-                    <div className="">
-                        <NavbarSliderUserUtility />
+
+                    <div className="mt-8 pt-6 border-t border-border text-center">
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
+                            BlackCat Streaming &copy; 2026
+                        </p>
                     </div>
                 </div>
             </DrawerContent>

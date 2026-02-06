@@ -9,23 +9,16 @@ function LogoutBtnLocal() {
     const { setIsUserAccountSliderOpen } = useGlobalContext();
 
     return (
-        <div>
-            <Button
-                variant="ghost"
-                className="flex w-full items-center justify-start space-x-2"
-                onClick={async () => {
-                    await logout();
-                    setIsUserAccountSliderOpen(false);
-                }}>
-                <LogOut
-                    className="-ms-1 me-2 mb-[0.10rem] opacity-60"
-                    size={16}
-                    strokeWidth={2}
-                    aria-hidden="true"
-                />
-                Sign Out
-            </Button>
-        </div>
+        <Button
+            variant="outline"
+            className="w-full flex items-center justify-center gap-2 text-destructive border-destructive/20 hover:bg-destructive/5 hover:border-destructive/30 transition-all rounded-xl py-5"
+            onClick={async () => {
+                setIsUserAccountSliderOpen(false);
+                await logout();
+            }}>
+            <LogOut size={16} />
+            <span className="font-semibold">Sign Out</span>
+        </Button>
     );
 }
 

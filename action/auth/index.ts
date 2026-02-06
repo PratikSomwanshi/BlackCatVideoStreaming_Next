@@ -37,7 +37,13 @@ export const makeSessionPremium = async () => {
     await session.save();
 };
 
+import { redirect } from "next/navigation";
+
 export const logout = async () => {
-    const session = await getSession();
+    const session = await getIronSession<SessionData>(
+        await cookies(),
+        sessionOptions
+    );
     session.destroy();
+    redirect("/");
 };

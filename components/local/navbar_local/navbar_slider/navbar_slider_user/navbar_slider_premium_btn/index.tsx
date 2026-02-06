@@ -9,31 +9,29 @@ function NavbarSliderPremiumBtn({
 }: Readonly<{ isPremium: boolean }>) {
     if (isPremium) {
         return (
-            <div>
-                <Button className="flex justify-center items-center cursor-default">
+            <div className="w-full">
+                <Button className="w-full flex justify-center items-center bg-yellow-500 hover:bg-yellow-600 text-black font-bold rounded-xl py-5 cursor-default shadow-md">
                     <Crown
-                        className="-ms-1 me-2 mb-[0.10rem] opacity-60"
-                        size={16}
-                        strokeWidth={2}
-                        aria-hidden="true"
+                        className="me-2"
+                        size={18}
+                        strokeWidth={2.5}
                     />
-                    {"Premium User"}
+                    {"Premium Member"}
                 </Button>
             </div>
         );
     }
 
     return (
-        <div>
-            <Link href="/go_premium">
-                <Button className="flex justify-center items-center">
+        <div className="w-full">
+            <Link href="/go_premium" className="w-full block">
+                <Button className="w-full flex justify-center items-center bg-yellow-500 hover:bg-yellow-600 text-black font-bold rounded-xl py-5 shadow-lg active:scale-[0.98] transition-all">
                     <Crown
-                        className="-ms-1 me-2 mb-[0.10rem] opacity-60"
-                        size={16}
-                        strokeWidth={2}
-                        aria-hidden="true"
+                        className="me-2"
+                        size={18}
+                        strokeWidth={2.5}
                     />
-                    {"Be Premium User"}
+                    {"Upgrade to Premium"}
                 </Button>
             </Link>
         </div>
