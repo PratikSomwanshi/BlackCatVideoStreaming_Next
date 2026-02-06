@@ -1,39 +1,44 @@
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { Film, Crown, Ticket, Heart, Bookmark } from "lucide-react";
 
 function NavbarSliderUserUtility() {
     const utility_links = [
         {
+            title: "Shorts",
+            url: "/shorts",
+            icon: Film,
+        },
+        {
+            title: "Premium",
+            url: "/premium",
+            icon: Crown,
+        },
+        {
             title: "Redeem Voucher",
             url: "/redeem",
-            icon: "/ticket.svg",
+            icon: Ticket,
         },
         {
             title: "Favorites",
             url: "/favorites",
-            icon: "/heart.svg",
+            icon: Heart,
         },
         {
             title: "Watchlist",
             url: "/watchlist",
-            icon: "/book-marked.svg",
+            icon: Bookmark,
         },
     ];
 
     return (
-        <div className="flex flex-col space-y-3">
+        <div className="flex flex-col space-y-4">
             {utility_links.map((link) => (
                 <Link
                     key={link.url}
                     href={link.url}
-                    className="flex items-center space-x-2">
-                    <Image
-                        src={link.icon}
-                        alt={link.title}
-                        width={16}
-                        height={16}
-                    />
+                    className="flex items-center space-x-3 text-sm font-medium hover:text-primary transition-colors">
+                    <link.icon size={18} />
                     <span>{link.title}</span>
                 </Link>
             ))}
